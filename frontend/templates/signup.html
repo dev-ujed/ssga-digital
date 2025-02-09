@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="container">  
+    <form action="/registrarme/" method="POST">
+        {% csrf_token %}
+        
+        <div class="card mx-auto" style="width: 30rem;">
+            <h2 class="card-header">Registrarme!</h2>
+            <div class="card-body">
+  
+            {{ form }}
+
+            <button class="btn btn-sm btn-primary float-end" type="submit">Registrarme</button>
+          </div>
+        </div>
+    </form>
+    {{ error }}
+</div>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'layouts/main.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="container mt-5" style="text-align: center;">
+    <h1 class="text-center">Inicia sesión</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="mb-3">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <button type="submit">Iniciar sesión</button>
+        {{ form.non_field_errors }}
+        <div class="mb-3">
+            <a href="{% url 'registro' %}">Registrarme!</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
