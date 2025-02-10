@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date
 
 
 # Create your models here.
@@ -32,3 +33,11 @@ class Evento(models.Model):
 
     def _str_(self):
         return self.actividad 
+    
+    def progreso(self):
+        total_dias = (self.fecha_fin - self.fecha_inicio).days
+        # print(total_dias)
+        if total_dias <= 0:  # Manejo de errores para fechas inválidas
+            return 0
+        dias_transcurridos = (min(self.fecha_fin, date.today()) - self.fecha_inicio).days
+        return max(0, min((dias_transcurridos / total_dias) * 100, 100))
