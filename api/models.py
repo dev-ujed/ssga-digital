@@ -41,3 +41,8 @@ class Evento(models.Model):
             return 0
         dias_transcurridos = (min(self.fecha_fin, date.today()) - self.fecha_inicio).days
         return max(0, min((dias_transcurridos / total_dias) * 100, 100))
+    
+    @property
+    def dias_restantes(self):
+        hoy = date.today()
+        return max((self.fecha_fin - hoy).days, 0)

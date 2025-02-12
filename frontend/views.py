@@ -92,4 +92,30 @@ class EventoUpdateView(UpdateView):
     model = Evento
     template_name = 'editar_evento.html'
     form_class = EventoForm
-    success_url = reverse_lazy('eventos')    
+    success_url = reverse_lazy('eventos')
+
+
+class EventosView(View):
+    def get(self, request, *args, **kwargs):
+        eventos = Evento.objects.all()
+        eventos_data = [
+            {
+                'title': f"{evento.actividad} - {evento.progreso():.2f}% ({evento.dias_restantes} días restantes)",
+                'start': evento.fecha_inicio.isoformat(),
+                'end': evento.fecha_fin.isoformat(),
+                'progreso': evento.progreso(),
+                'extendedProps': {
+                    'descripcion': evento.descripcion
+                },
+                'backgroundColor': '#ff5733',
+                'borderColor': '#c70039',
+                'textColor': '#ffffff',
+            }
+            for evento in eventos
+        ]
+        return JsonResponse(eventos_data, safe=False)
+    
+
+class CalendarView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'calendar.html')  # Renderiza la plantilla del calendario
