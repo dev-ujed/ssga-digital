@@ -13,5 +13,43 @@
              </div>          
         </form>
     </div>
+    <br>
+    <br><br><br><br>
+    <nav class="navbar" style="margin-top: 60px;">
+        {% include "layouts/footer.html" %}
+    </nav>
+
+    <script>
+        document.getElementById("eventoForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Se guardará el nuevo evento.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, guardar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Guardando...",
+                        text: "Por favor, espera.",
+                        icon: "info",
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            this.submit(); // Envía el formulario
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+        
+        
+        
+    
 
 {% endblock %}    

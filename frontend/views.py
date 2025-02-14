@@ -75,6 +75,10 @@ class EventosCreateView(CreateView):
     form_class = EventoForm
     success_url = reverse_lazy('eventos')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "¡Evento guardado correctamente!")
+        return response
 
 class EventosListView(ListView):
     model = Evento
