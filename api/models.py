@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+import json
+from datetime import date, datetime 
+
 
 
 # Create your models here.
@@ -30,6 +33,9 @@ class Evento(models.Model):
     fecha_inicio    = models.DateField()
     fecha_fin       = models.DateField()
     usuario         = models.ForeignKey(User, on_delete=models.CASCADE)
+    actualizado_en  = models.DateTimeField(auto_now=True)
+    cambios         = models.JSONField(default=dict, blank=True)
+    
 
     def _str_(self):
         return self.actividad 
@@ -46,3 +52,30 @@ class Evento(models.Model):
     def dias_restantes(self):
         hoy = date.today()
         return max((self.fecha_fin - hoy).days, 0)
+    
+
+    # --Registro de modificacion
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original = Evento.objects.get(pk=self.pk)
+            cambios_detectados = {}
+
+            for field in self._meta.fields:
+                field_name = field.name
+                if field_name not in ["actualizado_en", "cambios"]:
+                    old_value = getattr(original, field_name)
+                    new_value = getattr(self, field_name)
+
+                    # ✅ Convertir fechas a string antes de guardarlas en JSON
+                    if isinstance(old_value, (date, datetime)):  
+                        old_value = old_value.strftime('%Y-%m-%d') if old_value else None
+                    if isinstance(new_value, (date, datetime)):  
+                        new_value = new_value.strftime('%Y-%m-%d') if new_value else None
+
+                    if old_value != new_value:
+                        cambios_detectados[field_name] = {"antes": old_value, "despues": new_value}
+
+            if cambios_detectados:
+                self.cambios = cambios_detectados  
+
+        super().save(*args, **kwargs)

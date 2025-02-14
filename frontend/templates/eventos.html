@@ -16,6 +16,7 @@
                 <th>Fecha Inicio</th>
                 <th>Fecha Termino</th>
                 <th>Progreso</th>
+                <th>Cambios</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -27,6 +28,15 @@
                 <td>{{ i.fecha_inicio }}</td>
                 <td>{{ i.fecha_fin }}</td>
                 <td>{{ i.progreso|floatformat:2 }}%</td>
+                <td>
+                    {% if i.cambios %}
+                        {% for campo, valores in i.cambios.items %}
+                            <p>{{ campo }}: {{ valores.antes }} → {{ valores.despues }}</p>
+                        {% endfor %}
+                    {% else %}
+                        Sin cambios recientes
+                    {% endif %}
+                </td>
                 <td>
                     <form method="POST" action="{% url 'eliminar_evento' i.pk %}" id="form-eliminar-{{ i.pk }}">
                         {% csrf_token %}
