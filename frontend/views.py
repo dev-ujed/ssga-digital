@@ -76,6 +76,7 @@ class EventosCreateView(CreateView):
     success_url = reverse_lazy('eventos')
 
     def form_valid(self, form):
+        form.instance.usuario = self.request.user  # ¡Clave aquí!
         response = super().form_valid(form)
         messages.success(self.request, "¡Evento guardado correctamente!")
         return response
@@ -123,3 +124,8 @@ class EventosView(View):
 class CalendarView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'calendar.html')  # Renderiza la plantilla del calendario
+
+
+class DireccionesAdminView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'direcciones.html')

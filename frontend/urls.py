@@ -13,4 +13,5 @@ urlpatterns = [
     path('editar_evento/<int:pk>', views.EventoUpdateView.as_view(),          name='editar_evento'),
     path('events/', views.EventosView.as_view(), name='get_events'),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
+    path('direcciones_admin/', views.DireccionesAdminView.as_view(), name='direcciones'),
 ]

@@ -10,5 +10,5 @@ class EventoForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
             'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'YYYY-MM-DD'}),
             'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'YYYY-MM-DD'}),
-            'usuario': forms.Select(attrs={'class': 'form-control'}),
         }
+        exclude = ['cambios', 'usuario']
