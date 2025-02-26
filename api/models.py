@@ -16,14 +16,14 @@ class Direccion(models.Model):
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil', verbose_name='Usuario')
-    departamento = models.ForeignKey(Direccion, on_delete=models.CASCADE)
+    departamento = models.ForeignKey(Direccion, on_delete=models.CASCADE, verbose_name='departamento')
 
     class Meta:
         verbose_name='perfil'
         verbose_name_plural='perfiles'
         ordering=['-id']
 
-    def _str_(self):
+    def __str__(self):
         return self.user.username  
     
 
@@ -37,7 +37,7 @@ class Evento(models.Model):
     cambios         = models.JSONField(default=dict, blank=True)
     
 
-    def _str_(self):
+    def __str__(self):
         return self.actividad 
     
     def progreso(self):

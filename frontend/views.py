@@ -13,7 +13,8 @@ from django.views.generic import ListView, DeleteView, UpdateView
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib import messages
-
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -81,51 +82,88 @@ class EventosCreateView(CreateView):
         messages.success(self.request, "¡Evento guardado correctamente!")
         return response
 
-class EventosListView(ListView):
+# Decorador para verificar perfil y login
+class ProfileRequiredMixin:
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'perfil'):
+            return redirect('nombre_de_tu_vista_para_crear_perfil')  # Ajusta esto
+        return super().dispatch(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name='dispatch')
+class EventosListView(ProfileRequiredMixin, ListView):
     model = Evento
     template_name = 'eventos.html'
     context_object_name = 'eventos'
 
+    def get_queryset(self):
+        direccion = self.request.user.perfil.departamento
+        return Evento.objects.filter(
+            usuario__perfil__departamento=direccion
+        ).select_related('usuario')
 
-class EliminarEventoView(DeleteView):
-    model = Evento  # Modelo a eliminar
-    template_name = 'confirmar_eliminacion.html'  # Template de confirmación (opcional)
+
+@method_decorator(login_required, name='dispatch')
+class EliminarEventoView(ProfileRequiredMixin, DeleteView):
+    model = Evento
+    template_name = 'confirmar_eliminacion.html'
     success_url = reverse_lazy('eventos')
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class EventoUpdateView(UpdateView):
+
+@method_decorator(login_required, name='dispatch')
+class EventoUpdateView(ProfileRequiredMixin, UpdateView):
     model = Evento
     template_name = 'editar_evento.html'
     form_class = EventoForm
     success_url = reverse_lazy('eventos')
 
+    def get_queryset(self):
+        return super().get_queryset().filter(usuario=self.request.user)
 
-class EventosView(View):
+
+@method_decorator(login_required, name='dispatch')
+class EventosView(ProfileRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        eventos = Evento.objects.all()
-        eventos_data = [
-            {
-                'title': f"{evento.actividad} - {evento.progreso():.2f}% ({evento.dias_restantes} días restantes)",
-                'start': evento.fecha_inicio.isoformat(),
-                'end': evento.fecha_fin.isoformat(),
-                'progreso': evento.progreso(),
-                'extendedProps': {
-                    'descripcion': evento.descripcion
-                },
-                'backgroundColor': '#ff5733',
-                'borderColor': '#c70039',
-                'textColor': '#ffffff',
-            }
-            for evento in eventos
-        ]
+        direccion = request.user.perfil.departamento
+        eventos = Evento.objects.filter(
+            usuario__perfil__departamento=direccion
+        ).select_related('usuario')
+        
+        eventos_data = [self._evento_to_dict(e) for e in eventos]
         return JsonResponse(eventos_data, safe=False)
+
+    def _evento_to_dict(self, evento):
+        return {
+            'id': evento.id,
+            'title': evento.actividad,
+            'start': evento.fecha_inicio.isoformat(),
+            'end': evento.fecha_fin.isoformat(),
+            'extendedProps': {
+                'descripcion': evento.descripcion,
+                'progreso': evento.progreso(),
+                'dias_restantes': evento.dias_restantes,
+                'usuario': evento.usuario.get_full_name(),
+                'direccion': evento.usuario.perfil.departamento.nombre
+            },
+            'color': self._get_color(evento),
+            'editable': evento.usuario == self.request.user
+        }
+
+    def _get_color(self, evento):
+        # Ejemplo: Color diferente para eventos del usuario actual
+        if evento.usuario == self.request.user:
+            return '#3c8dbc'  # Azul para mis eventos
+        return '#00a65a'     # Verde para otros
     
 
-class CalendarView(View):
+@method_decorator(login_required, name='dispatch')
+class CalendarView(ProfileRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'calendar.html')  # Renderiza la plantilla del calendario
-
-
-class DireccionesAdminView(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'direcciones.html')
+        context = {
+            'direccion_actual': request.user.perfil.departamento.nombre
+        }
+        return render(request, 'calendar.html', context)
