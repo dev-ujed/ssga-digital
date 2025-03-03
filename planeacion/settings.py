@@ -120,6 +120,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+# END session
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# Cerrar la sesión al cerrar el navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_COOKIE_SAMESITE='Strict'
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
