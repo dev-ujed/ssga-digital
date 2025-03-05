@@ -165,8 +165,8 @@ class EventosView(ProfileRequiredMixin, View):
     def _get_color(self, evento):
         # Ejemplo: Color diferente para eventos del usuario actual
         if evento.usuario == self.request.user:
-            return '#3c8dbc'  # Azul para mis eventos
-        return '#00a65a'     # Verde para otros
+            return '#766ec5'  # mis eventos
+        return '#7c7c7c'     # otros
     
 
 @method_decorator(login_required, name='dispatch')

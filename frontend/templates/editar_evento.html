@@ -2,41 +2,48 @@
 {% load static %}
 {% block content %}
 
-<div class="container" style="margin-top: 60px;">
-    <h2>✎ Editar Evento</h2>
-    <br>
-    <form method="post" id="editar-evento-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div class="d-grid gap-2">
-            <!-- Botón modificado para SweetAlert -->
-            <button class="btn btn-success" type="button" onclick="confirmarGuardar()">
-                Guardar
-            </button>
-        </div>     
-    </form>
-    <br>
-    <div class="d-grid gap-2" style="margin-top: auto">
-        <!-- Enlace modificado para SweetAlert -->
-        <a class="btn btn-secondary" href="#" onclick="confirmarCancelacion()">
-            Cancelar
-        </a>
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+</style>
+
+<div class="content-grid" style="margin-top: 50px;">
+    <div class="card mb-3 text-center" style="max-width: 900px;">
+        <div class="card-body">
+            <h2 class="card-title">
+                <i class="bi bi-pencil-fill"></i>
+                Editar Evento
+            </h2>
+            <form method="post" id="editar-evento-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid gap-2">
+                    <!-- Botón modificado para SweetAlert -->
+                    <button class="btn" type="button" onclick="confirmarGuardar()" style="background-color: #212529; color: #fff;">
+                        <i class="bi bi-save"> Guardar</i>
+                    </button>
+                </div>     
+            </form>
+            <br>
+            <div class="d-grid gap-2" style="margin-top: auto">
+                <!-- Enlace modificado para SweetAlert -->
+                <a class="btn btn-secondary" href="#" onclick="confirmarCancelacion()">
+                    <i class="bi bi-x-square"> Cancelar</i>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
-<nav class="navbar" style="background: #b3142c; color: white; padding: 15px 0; margin-top: 60px;">
-    <div class="container-fluid d-flex flex-column align-items-center text-center">
-      <!-- Imagen centrada -->
-      <a class="navbar-brand" href="#">
-        <img src="{% static 'images/logo-ujed.2025.png' %}" alt="Logo" width="160" height="160" class="d-inline-block align-text-top">
-      </a>
-      <!-- Texto centrado debajo de la imagen -->
-      <h1 class="mb-0">SUBSECRETARÍA GENERAL ACADÉMICA</h1>
-      <div class="small mt-2">
-        <p>Cuarto piso, Edificio de la Librería UJED. Victoria Sur 200, esquina con 20 de Noviembre, Zona Centro.</p>
-        <p>C.P. 34000. Durango, Dgo. México. Teléfono: +52(618) 827-12-48. E-mail: subsecretaria.academica@ujed.mx</p>
-      </div>
-    </div>
-  </nav>
+
+{% include "layouts/footer.html" %}
+
 
 <script>
 // Función para guardar cambios
