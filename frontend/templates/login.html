@@ -27,6 +27,13 @@
   }
 </style>
 
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+      <!-- <p>{{ message }}</p> -->
+  {% endfor %}
+</div>
+{% endif %}
 <div class="content-grid" style="margin-top: 60px;">
   <div class="card mb-3 text-center" style="max-width: 540px; background-color: #212529;">
       <div class="row g-0">
@@ -50,7 +57,6 @@
                       <br>
                       <button type="submit" class="btn" style="background-color: #333333; color: #ffffff;">Iniciar sesión</button>
                   </form>
-                  {{ error }}
                   <br> 
               </div>
           </div>

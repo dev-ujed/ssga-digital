@@ -33,6 +33,11 @@ class LoginView(FormView):
         user = form.get_user()  # Obtiene el usuario autenticado
         login(self.request, user)  # Inicia la sesión del usuario
         return redirect(self.get_success_url())
+    
+    def form_invalid(self, form):
+        """Maneja el caso en que el formulario no es válido (credenciales incorrectas)"""
+        messages.error(self.request, "Usuario o contraseña incorrectos.")  # Envía un mensaje de error
+        return super().form_invalid(form)  # Vuelve a mostrar el formulario con errores
 
     def get_success_url(self):
         """Redirigir después del login, con soporte para ?next="" en la URL"""
@@ -49,31 +54,30 @@ class LogoutView(View):
 
 
 def user_register(request):
-
     if request.method == 'GET':
         return render(request, 'signup.html', {
-        'form': UserCreationForm 
-    })
+            'form': UserCreationForm 
+        })
     else:
         if request.POST['password1'] == request.POST['password2']:
             try:
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
                 user.save()
-                # usuario
-                #login(request, user)
+                # Añade un mensaje de éxito
+                messages.success(request, 'Usuario creado correctamente.')
+                # Redirige al usuario a la página de login
                 return redirect('login')
             except:
                 # return HttpResponse('el usuario ya existe')
                 return render(request, 'signup.html', {
                     'form': UserCreationForm,
-                    'error' : 'usario ya existe' 
+                    'error' : 'Usuario ya existe' 
                 })
         # return HttpResponse('passwords no coinciden')
         return render(request, 'signup.html', {
             'form': UserCreationForm, 
-            'error': 'passwords no coinciden'
-    })
-
+            'error': 'Passwords no coinciden'
+        })
 
 class EventosCreateView(CreateView):
     model = Evento
