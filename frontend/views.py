@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 class LoginView(FormView):
     template_name = 'login.html'  # Ruta al archivo de plantilla
     form_class = BootstrapAuthenticationForm
-    success_url = reverse_lazy('nuevo_evento')  # Redirigir después de iniciar sesión
+    success_url = reverse_lazy('eventos')  # Redirigir después de iniciar sesión
 
     def dispatch(self, request, *args, **kwargs):
         """Cierra la sesión antes de procesar cualquier solicitud a esta vista"""

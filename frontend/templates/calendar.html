@@ -42,7 +42,7 @@
             events: '/events/', // URL para cargar eventos
             eventClick: function(info) {
                 Swal.fire({
-                    title: info.event.title + ' (' + info.event.extendedProps.dias_restantes + ' dias restantes) ' + Math.min(info.event.extendedProps.progreso, 100).toFixed(0) + ' %',
+                    title: info.event.title + ' (' + info.event.extendedProps.dias_restantes + ' dias restantes) ' + Math.min(info.event.extendedProps.progreso, 100).toFixed(0) + ' % de progreso.',
                     text:   '\nDescripcion: ' + info.event.extendedProps.descripcion + '. ' +
                             '\nTérmino antes de: ' + (info.event.end ? info.event.end.toLocaleDateString() : 'No especificado'),      
                 });

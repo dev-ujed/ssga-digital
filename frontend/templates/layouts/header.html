@@ -34,12 +34,12 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" 
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.username }}
+                           <i class="bi bi-person-square"> {{ user.username }}</i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person-square"> Perfil</i></a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-left"> Cerrar sesión</i></a></li>
                         </ul>
                     </li>
                 {% else %}
