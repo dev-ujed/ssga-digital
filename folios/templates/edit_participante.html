@@ -1,0 +1,96 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+</style>
+
+<div class="container d-flex justify-content-center" style="margin-top: 50px;">
+    <div class="card mb-3 text-center" style="max-width: 900px;">
+        <div class="card-body">
+            <h2 class="card-title">
+                <i class="bi bi-pencil-fill"></i>
+                Editar Participante
+            </h2>
+            <form method="post" id="editar-parse-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid gap-2">
+                    <!-- Botón modificado para SweetAlert -->
+                    <button class="btn" type="button" onclick="confirmarGuardar()" style="background-color: #212529; color: #fff;">
+                        <i class="bi bi-save"> Guardar</i>
+                    </button>
+                </div>     
+            </form>
+            <br>
+            <div class="d-grid gap-2" style="margin-top: auto">
+                <!-- Enlace modificado para SweetAlert -->
+                <a class="btn btn-secondary" href="#" onclick="confirmarCancelacion()">
+                    <i class="bi bi-x-square"> Cancelar</i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "layouts/footer.html" %}
+
+
+<script>
+        // Función para guardar cambios
+        function confirmarGuardar() {
+            Swal.fire({
+                title: '¿Guardar cambios?',
+                text: "¿Estás seguro de modificar este participante?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editar-parse-form').submit(); // Envía el formulario
+                }
+            });
+        }
+        
+        // Función para cancelar edición
+        function confirmarCancelacion() {
+            Swal.fire({
+                title: '¿Descartar cambios?',
+                text: "Los cambios no guardados se perderán.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6c757d',
+                cancelButtonColor: '#28a745',
+                confirmButtonText: 'Sí, cancelar',
+                cancelButtonText: 'Seguir editando'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'participantes' %}"; // Redirige a la lista
+                }
+            });
+        }
+        
+        // Opcional: Alertar al cerrar la página con cambios no guardados
+        let formOriginal = document.getElementById('editar-parse-form').innerHTML;
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (document.getElementById('editar-parse-form').innerHTML !== formOriginal) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+</script>
+
+{% endblock %}

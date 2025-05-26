@@ -1,0 +1,94 @@
+<!-- resultados_busqueda.html -->
+{% extends 'layouts/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+        background-image: url("{% static 'images/school.png' %}");
+        background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+                background-position: center; /* Centra la imagen */
+                background-repeat: no-repeat; /* No repetir la imagen */
+                background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+                min-height: 100vh; /* Asegura que cubra toda la pantalla */
+                margin: 0; /* Elimina márgenes */
+    }
+
+    .autoridades{
+        color: #212529;
+    }
+    .btn {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.5s ease; /* Para un efecto suave */
+    }
+
+    .btn:hover {
+        background-color: #ba0000; /* Nuevo color cuando el mouse esté encima */
+        color: #fff; /* Opcional: cambiar el color del texto */
+    }
+
+    .folio {
+        color: #efb810; /* Cambia el color a tu preferencia */
+        font-weight: bold;
+    }
+
+    .lg{
+        width: 120px;
+    }
+
+</style>
+
+<div class="container mt-4" style="background-color: #212529; color: #fff;">
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="mb-3 mb-md-0">
+            <img src="{% static 'images/logo-ujed.2025.png' %}" alt="" class="img-fluid" style="max-width: 90px; margin: 5px;">
+        </div>
+        <div class="text-center text-md-start">
+            <h2>Universidad Juárez del Estado de Durango</h2>
+            <h3>Autenticidad de certificado: <span class="folio">{{ folio_buscado }}</span></h3>
+        </div>
+    </div>
+</div>
+
+
+<div class="container d-flex justify-content-center" style="margin-top: 50px;">    
+    {% if productos %}
+        {% for i in productos %}
+        <div class="card mb-3 text-center" style="max-width: 900px;">
+            <h4 class="card-header text-center">
+                CERTIFICADO
+            </h4>
+            <div class="card-body">
+                <p>Nombre: <span class="folio"> {{ i.nombre }}</span> </p>
+                <p>Figura de Participación:<span class="folio"> {{ i.figura }}</span> </p>
+                <p>Actividad de Formación:<span class="folio"> {{ i.actividad }}</span> </p>
+                <p>Periodo:<span class="folio"> {{ i.periodo }}</span></p>
+            </div>
+            <div class="card-footer text-end">
+                <p>Nombre de autoridades que firman la constancia: </p>
+                <p class="autoridades"><i class="bi bi-person-check-fill"></i> {{ i.autoridad_uno }}</p>
+                <p class="autoridades"><i class="bi bi-person-check-fill"></i> {{ i.autoridad_dos }}</p>
+            </div>
+            <div class="card-footer text-start">
+                <p>FOLIO<span class="folio"> {{ folio_buscado }}</span></p>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">
+            No se encontraron registros para el folio {{ folio_buscado }}
+        </div>
+    {% endif %}
+    <br>
+</div>
+<div class="container">
+    <a href="{% url 'buscar_folio' %}" class="btn btn-secondary">Nueva Búsqueda</a>
+</div>
+
+{% include 'layouts/footer.html' %}
+
+{% endblock %}

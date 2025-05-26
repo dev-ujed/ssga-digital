@@ -1,0 +1,55 @@
+{% extends 'layouts/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+    .container {
+        margin-top: 90px;
+    }
+
+    .btn {
+        background-color: #ba0000;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.5s ease; /* Para un efecto suave */
+    }
+
+    .btn:hover {
+        background-color: #333; /* Nuevo color cuando el mouse esté encima */
+        color: #fff; /* Opcional: cambiar el color del texto */
+}
+    
+</style>
+
+<div class="container d-flex justify-content-center" style="margin-top: 60px;">
+    <div class="card mb-3 text-center" style="max-width: 900px;">
+        <form method="post">
+        <div class="card-header text-bg-dark ">
+            <img src="{% static 'images/logo-ujed.2025.png' %}" class="card-img-top" alt="..."  style="width: 120px;">    
+        </div>
+        <div class="card-body">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn">Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% include 'layouts/footer.html' %}
+
+
+{% endblock %}

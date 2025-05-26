@@ -31,7 +31,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['digitalssga.ujed.mx','http://digitalssga.ujed.mx', '127.0.0.1']
+ALLOWED_HOSTS = ['digitalssga.ujed.mx','http://digitalssga.ujed.mx', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'frontend',
+    'folios',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),
 ]
+
+# Media
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

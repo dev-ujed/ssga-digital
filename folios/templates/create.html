@@ -1,0 +1,42 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+     
+</style>
+
+<div class="container" style="margin-top: 60px;">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <form action="" method="post">
+                <div class="card text-center">
+                    <h4 class="card-header bg-dark text-light">
+                        <i class="bi bi-patch-plus"></i> Agregar Participante
+                    </h4>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        {{ form }}
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-secondary">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include 'layouts/footer.html' %}
+
+
+{% endblock %}
