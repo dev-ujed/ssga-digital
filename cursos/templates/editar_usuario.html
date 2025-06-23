@@ -1,0 +1,113 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+</style>
+
+
+<div class="container d-flex justify-content-center" style="margin-top: 60px;">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <h2>Editar Perfil</h2>
+                </h2>
+            </div>
+            <form method="post" id="editar-parse-form">
+                {% csrf_token %}      
+                <div class="mb-3">
+                    {{ form.matricula.label_tag }}
+                    {{ form.matricula }}
+                    {% if form.matricula.errors %}
+                    <div class="text-danger">{{ form.matricula.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.nombre.label_tag }}
+                    {{ form.nombre }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.apellido.label_tag }}
+                    {{ form.apellido }}
+                </div>  
+                <div class="d-grid gap-2" style="margin-top: auto">
+                    <button class="btn" type="button" onclick="confirmarGuardar()" style="background-color: #212529; color: #fff;">
+                        <i class="bi bi-save"> Guardar</i>
+                    </button> 
+                    <br>          
+                </div>
+            </form>
+            <div class="d-grid gap-2" style="margin-top: auto">
+                <!-- Enlace modificado para SweetAlert -->
+                <a class="btn btn-secondary" href="#" onclick="confirmarCancelacion()">
+                    <i class="bi bi-x-square"> Cancelar</i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>    
+
+{% include "layouts/footer.html" %}
+
+<script>
+        // Función para guardar cambios
+        function confirmarGuardar() {
+            Swal.fire({
+                title: '¿Guardar cambios?',
+                text: "¿Estás seguro de modificar este participante?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, guardar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editar-parse-form').submit(); // Envía el formulario
+                }
+            });
+        }
+        
+        // Función para cancelar edición
+        function confirmarCancelacion() {
+            Swal.fire({
+                title: '¿Descartar cambios?',
+                text: "Los cambios no guardados se perderán.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6c757d',
+                cancelButtonColor: '#28a745',
+                confirmButtonText: 'Sí, cancelar',
+                cancelButtonText: 'Seguir editando'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'perfil' %}"; // Redirige a la lista
+                }
+            });
+        }
+        
+        // Opcional: Alertar al cerrar la página con cambios no guardados
+        let formOriginal = document.getElementById('editar-parse-form').innerHTML;
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (document.getElementById('editar-parse-form').innerHTML !== formOriginal) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+</script>
+
+{% endblock %}

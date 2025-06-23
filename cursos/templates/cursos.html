@@ -1,0 +1,159 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      margin: 0;
+    }
+    
+    h4 {
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    } 
+    
+    .card-course {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        border: none;
+        height: 100%;
+        text-align: center; /* Centrado general */
+    }
+    
+    .card-course:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #1a2980, #212529);
+        color: white;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+    
+    .card-body {
+        background: rgba(255, 255, 255, 0.95);
+        display: flex; 
+        flex-direction: column;
+        align-items: center; /* Centrado vertical */
+        justify-content: center; /* Centrado horizontal */
+    }
+    
+    .card-title {
+        font-weight: 600;
+        color: #2c3e50;
+        min-height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center; /* Doble seguridad */
+        width: 100%; /* Asegura que ocupe todo el ancho */
+    }
+    
+    .teacher-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%; /* Asegura que ocupe todo el ancho */
+        text-align: center; /* Centrado de texto */
+    }
+    
+    .teacher-item {
+        padding: 8px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Centrado horizontal */
+    }
+    
+    .teacher-icon {
+        margin-right: 10px;
+        color: #3498db;
+    }
+    
+    .card-footer {
+        background: rgba(255, 255, 255, 0.85);
+        border-top: 1px solid rgba(0,0,0,0.05);
+        font-size: 0.9rem;
+        text-align: center; /* Centrado footer */
+    }
+    
+    .cupo-agotado {
+        color: #e74c3c;
+        font-weight: 500;
+    }
+    
+    .disponible {
+        color: #27ae60;
+        font-weight: 500;
+    }
+    
+    .cursos-container {
+        margin-top: 30px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mb-4">
+            <h4 class="display-5">Lista de Cursos</h4>
+        </div>
+    </div>
+</div>
+
+<div class="container cursos-container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for i in cursos %}
+        <div class="col">
+            <a href="{% url 'curso_detail' pk=i.pk %}" class="text-decoration-none">
+                <div class="card card-course h-100">
+                    <div class="card-header text-center"> <!-- Centrado header -->
+                        <h5 class="mb-0"><i class="bi bi-stars"></i></h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ i.nombre }}</h5>
+                        <div class="mt-4 w-100"> <!-- Asegura ancho completo -->
+                            <h6 class="text-muted mb-3"><i class="bi bi-people-fill me-2"></i>Maestros:</h6>
+                            <ul class="teacher-list">
+                                {% for maestro in i.maestros.all %}
+                                <li class="teacher-item">
+                                    <i class="bi bi-person-check teacher-icon"></i>
+                                    {{ maestro.nombre }}
+                                </li>
+                                {% empty %}
+                                <li class="text-muted fst-italic">Sin maestros asignados</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center"> <!-- Centrado footer -->
+                        {% if i.cupos_disponibles == 0  %}
+                            <p class="mb-0 cupo-agotado">
+                                <i class="bi bi-x-circle-fill"></i> CUPO AGOTADO
+                            </p>
+                        {% else %}    
+                            <p class="mb-0 disponible">
+                                <i class="bi bi-check-circle-fill"></i> 
+                                Cupos disponibles: {{ i.cupos_disponibles }}/{{ i.cupo }}
+                            </p>
+                        {% endif %}    
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>  
+</div>
+
+{% include 'layouts/footer.html' %}
+
+{% endblock %}

@@ -96,7 +96,7 @@ class ProfileRequiredMixin:
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         if not hasattr(request.user, 'perfil'):
-            return redirect('nombre_de_tu_vista_para_crear_perfil')  # Ajusta esto
+            return redirect('cursos')  # Ajusta esto
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -176,3 +176,4 @@ class CalendarView(ProfileRequiredMixin, View):
             'direccion_actual': request.user.perfil.departamento.nombre
         }
         return render(request, 'calendar.html', context)
+    

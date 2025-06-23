@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container" style="margin-top: 60px;">
+    <h4>Mapa Sitio</h4>
+    <ul>
+        {% if user.groups.all.0.name == 'usuario_alumno' or user.is_staff %}
+            <li><a href="{% url 'cursos' %}">Cursos</a></li>
+            <li><a href="{% url 'buscar_folio' %}">Buscar Folio</a></li>
+        {% endif %}
+        {% if user.is_authenticated and user.is_staff %}
+            <li><a href="{% url 'cursos_admin' %}">Cursos Admin</a></li>
+            <li><a href="{% url 'participantes' %}">Participantes</a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<div style="position: fixed; bottom: 0; left: 0; width: 100%;">
+    {% include 'layouts/footer.html' %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    body {
+      background-image: url("{% static 'images/school.png' %}");
+      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
+              background-position: center; /* Centra la imagen */
+              background-repeat: no-repeat; /* No repetir la imagen */
+              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
+              min-height: 100vh; /* Asegura que cubra toda la pantalla */
+              margin: 0; /* Elimina márgenes */
+          }
+    .container {
+        margin-top: 90px;
+    }
+    
+</style>
+
+
+<form class="container" method="post" enctype="multipart/form-data">
+    <div class="card">
+        <h3 class="card-header text-center bg-dark text-light">+ Nuevo Ponente</h3>
+        <div class="card-body">
+            {% csrf_token %}
+            {{ form }}
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-dark" type="submit">Guardar</button>
+            <a class="btn btn-secondary" href="{% url 'cursos_admin' %}">Cancelar</a>
+
+        </div>
+    </div>
+</form>
+
+{% include 'layouts/footer.html' %}
+
+{% endblock %}

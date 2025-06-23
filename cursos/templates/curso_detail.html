@@ -1,0 +1,310 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  body {
+    background-image: url("{% static 'images/school.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding-bottom: 60px; /* Para el footer */
+  }
+  
+  p {
+    color: #000;
+  }
+  
+  /* Estilos para el contenedor de cards */
+  .cards-container {
+    margin-top: 100px;
+    margin-bottom: 50px;
+  }
+  
+  .card {
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+  
+  .card-header {
+    background: linear-gradient(to right, #4b6cb7, #182848);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 20px;
+  }
+  
+  .card-body {
+    padding: 25px;
+  }
+  
+  .card-footer {
+    background-color: rgba(75, 108, 183, 0.1);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 20px;
+  }
+  
+  .btn-dark {
+    background: linear-gradient(to right, #182848, #4b6cb7);
+    border: none;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  
+  .btn-dark:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  
+  .list-unstyled li {
+    margin-bottom: 10px;
+  }
+  
+  .btn-outline-link {
+    color: #182848;
+    border: 1px solid #4b6cb7;
+    border-radius: 30px;
+    padding: 5px 15px;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-block;
+    margin: 5px;
+  }
+  
+  .btn-outline-link:hover {
+    background: linear-gradient(to right, #4b6cb7, #182848);
+    color: white;
+    text-decoration: none;
+  }
+  
+  .text-success {
+    font-weight: 600;
+  }
+  
+  .text-danger {
+    font-weight: 600;
+  }
+  
+  .status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .badge-active {
+    background-color: rgba(40, 167, 69, 0.2);
+  }
+  
+  .badge-inactive {
+    background-color: rgba(220, 53, 69, 0.2);
+  }
+  
+  .badge-full {
+    background-color: rgba(220, 53, 69, 0.2);
+  }
+  
+  .course-icon {
+    font-size: 1.8rem;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    margin: 0;
+  }
+  
+  h4 {
+    color: #2c3e50;
+    font-weight: 600;
+  }
+  
+  /* Mejoras para el formulario */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  @media (max-width: 768px) {
+    .cards-container {
+      margin-top: 50px;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+    }
+    
+    .card-body, .card-footer {
+      padding: 15px;
+    }
+    
+    .btn-outline-link {
+      display: block;
+      margin: 10px auto;
+      text-align: center;
+      max-width: 250px;
+    }
+
+    h2, a{
+      color: #fff;
+    }
+  }
+</style>
+
+<div class="container" style="margin-top: 10px;">
+      <h2 style="text-align: left;"><a class="bi bi-arrow-left-circle" href="{% url 'cursos' %}"></a></h2>
+</div>
+
+<div class="container cards-container ">
+  <div class="row row-cols-1 row-cols-lg-2 g-4">
+    <!-- Primera Card - Información del curso -->
+    <div class="col">
+      <div class="card text-center h-100">
+        <div class="card-header">
+          <h1><i class="bi bi-book-half course-icon"></i> {{ curso.nombre }}</h1>
+        </div>
+        <div class="card-body">
+          <!-- <h4>{{ curso.descripcion }}</h4> -->
+          <p>
+            <strong>Estatus del Curso:</strong>
+            {% if curso.status %}
+              <span class="text-success status-badge badge-active">Activo</span>
+            {% else %}
+              <span class="text-danger status-badge badge-inactive">Inactivo</span>
+            {% endif %}
+          </p>
+
+          <p>
+            {% if curso.cupos_disponibles == 0 %}
+              <i class="bi bi-emoji-frown-fill text-danger"></i> 
+              <span class="text-danger status-badge badge-full">Cupo agotado</span>
+            {% else %}
+              <strong>Cupos disponibles:</strong> {{ curso.cupos_disponibles }} de {{ curso.cupo }}
+            {% endif %}
+          </p>
+
+          <p><strong>Ponente(s):</strong></p>
+          <ul class="list-unstyled">
+            {% for maestro in curso.maestros.all %}
+              <li>
+                <a href="{% url 'obtener_cv' maestro.id %}" class="btn btn-outline-link" target="_blank">
+                  <i class="bi bi-person-vcard-fill"></i> {{ maestro.nombre }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="card-footer">
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              {{ form.nombre.label_tag }}
+              {{ form.nombre }}
+            </div>
+            <div class="form-group">
+              {{ form.email.label_tag }}
+              {{ form.email }}
+            </div>
+            <div class="form-group">
+              {{ form.telefono.label_tag }}
+              {{ form.telefono }}
+            </div>
+            <div class="d-grid mt-3">
+              <button class="btn btn-dark" type="submit" {% if curso.cupos_disponibles == 0 %}disabled{% endif %}>
+                <i class="bi bi-star"></i> 
+                {% if curso.cupos_disponibles == 0 %}Cupo Agotado{% else %}Inscribirme{% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segunda Card - Detalles del curso -->
+    <div class="col">
+      <div class="card text-center h-100">
+        <div class="card-header">
+          <h1><i class="bi bi-calendar-check course-icon"></i> Detalles del Curso</h1>
+        </div>
+        <div class="card-body">
+          <div class="text-start">
+            <h4>{{ curso.descripcion }}</h4>
+            {% if curso.fecha_inicio %}
+              <p><strong>Fecha de inicio:</strong> {{ curso.fecha_inicio|date:"d M Y" }}</p>
+            {% endif %}
+            
+            {% if curso.fecha_fin %}
+              <p><strong>Fecha de finalización:</strong> {{ curso.fecha_fin|date:"d M Y" }}</p>
+            {% endif %}
+            
+            {% if curso.horario %}
+              <p><strong>Horario:</strong> {{ curso.horario }}</p>
+            {% endif %}
+            
+            {% if curso.duracion %}
+              <p><strong>Duración:</strong> {{ curso.duracion }} horas</p>
+            {% endif %}
+            
+            {% if curso.requisitos %}
+              <p><strong>Requisitos:</strong></p>
+              <ul>
+                {% for requisito in curso.requisitos_as_list %}
+                  <li>{{ requisito }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            
+            {% if curso.temario %}
+              <p><strong>Temario:</strong></p>
+              <ul>
+                {% for tema in curso.temario_as_list %}
+                  <li>{{ tema }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-footer">
+          {% if curso.material_url %}
+            <div class="d-grid">
+              <a href="{{ curso.material_url }}" class="btn btn-outline-dark" target="_blank">
+                <i class="bi bi-download"></i> Descargar Material
+              </a>
+            </div>
+          {% else %}
+            <p class="text-muted"> </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'layouts/footer.html' %}
+
+{% endblock %}

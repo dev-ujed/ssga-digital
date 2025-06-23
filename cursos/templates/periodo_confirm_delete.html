@@ -1,0 +1,32 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<h1>Eliminar Período</h1>
+    <button id="eliminarPeriodo" data-periodo-id="1">Eliminar Período</button>
+    <div id="mensaje"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#eliminarPeriodo').click(function() {
+                var periodoId = $(this).data('periodo-id');
+                
+                $.ajax({
+                    url: '/eliminar-periodo/' + periodoId + '/',
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#mensaje').html('<p style="color: green;">' + response.message + '</p>');
+                        } else {
+                            $('#mensaje').html('<p style="color: red;">' + response.message + '</p>');
+                        }
+                    },
+                    error: function() {
+                        $('#mensaje').html('<p style="color: red;">Error al eliminar el período.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

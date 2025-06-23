@@ -1,0 +1,30 @@
+{% extends "layouts/main.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container" id="calendar" style="margin-top: 100px;">
+
+</div>
+
+<!-- jQuery (si es necesario) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- FullCalendar JS -->
+<script src="{% static 'js/index.global.min.js' %}"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth', // Vista inicial
+            events: '/events/', // URL para cargar eventos
+            eventClick: function(info) {
+              alert('Evento: ' + info.event.nombre);
+        });
+        calendar.render();
+    });
+</script>
+
+{% endblock %}    
+
+
+
