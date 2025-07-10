@@ -15,6 +15,10 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q  # Para búsquedas más complejas
+from django.http import Http404
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 # Create your views here.
@@ -107,10 +111,27 @@ class EventosListView(ProfileRequiredMixin, ListView):
     context_object_name = 'eventos'
 
     def get_queryset(self):
+        # Base: Eventos del departamento del usuario + optimización
         direccion = self.request.user.perfil.departamento
-        return Evento.objects.filter(
+        queryset = Evento.objects.filter(
             usuario__perfil__departamento=direccion
         ).select_related('usuario')
+
+        # Búsqueda (si existe 'q')
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(actividad__icontains=query) | 
+                Q(usuario__username__icontains=query) |
+                Q(fecha_inicio__icontains=query) |
+                Q(fecha_fin__icontains=query) 
+            )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_term'] = self.request.GET.get('q', '')
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -119,8 +140,20 @@ class EliminarEventoView(ProfileRequiredMixin, DeleteView):
     template_name = 'confirmar_eliminacion.html'
     success_url = reverse_lazy('eventos')
 
-    def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+    def get_object(self, queryset=None):
+        evento = super().get_object(queryset)
+        # Verificar si el usuario es el creador o superusuario
+        if self.request.user != evento.usuario and not self.request.user.is_superuser:
+            messages.error(self.request, 'No tienes permiso para eliminar este evento')
+            raise Http404("Acceso denegado")
+        return evento
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except Http404:
+            # Capturamos el error para redirigir en lugar de mostrar 404
+            return redirect(self.success_url)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -130,8 +163,20 @@ class EventoUpdateView(ProfileRequiredMixin, UpdateView):
     form_class = EventoForm
     success_url = reverse_lazy('eventos')
 
-    def get_queryset(self):
-        return super().get_queryset().filter(usuario=self.request.user)
+    def get_object(self, queryset=None):
+        evento = super().get_object(queryset)
+        # Verificar si el usuario es el creador o superusuario
+        if self.request.user != evento.usuario and not self.request.user.is_superuser:
+            messages.error(self.request, 'No tienes permiso para editar este evento')
+            raise Http404("Acceso denegado")
+        return evento
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except Http404:
+            # Capturamos el error para redirigir en lugar de mostrar 404
+            return redirect(self.success_url)
 
 
 @method_decorator(login_required, name='dispatch')

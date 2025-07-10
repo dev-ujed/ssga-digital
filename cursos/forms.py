@@ -107,9 +107,12 @@ class ProfileForm(forms.ModelForm):
             }),
             'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Ej: Juan Carlos'
+
             }),
             'apellido': forms.TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'Ej: Pérez Gómez'
             }),
 
         }

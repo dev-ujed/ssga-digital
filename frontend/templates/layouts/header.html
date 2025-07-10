@@ -24,6 +24,12 @@
                             Eventos
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'cursos' %}active{% endif %}" 
+                           href="{% url 'cursos' %}">
+                            Cursos
+                        </a>
+                    </li>
                     {% if user.is_staff %}
                     <li>
                         <a class="nav-link" 

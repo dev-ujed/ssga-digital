@@ -41,12 +41,23 @@ class Evento(models.Model):
         return self.actividad 
     
     def progreso(self):
+        hoy = date.today()
+        
+        # Caso: Evento de un solo día
+        if self.fecha_inicio == self.fecha_fin:
+            return 100 if hoy >= self.fecha_inicio else 0
+        
+        # Caso: Fechas inválidas (fin antes de inicio)
         total_dias = (self.fecha_fin - self.fecha_inicio).days
-        # print(total_dias)
-        if total_dias <= 0:  # Manejo de errores para fechas inválidas
+        if total_dias <= 0:
             return 0
-        dias_transcurridos = (min(self.fecha_fin, date.today()) - self.fecha_inicio).days
-        return max(0, min((dias_transcurridos / total_dias) * 100, 100))
+        
+        # Cálculo normal para eventos de múltiples días
+        dias_transcurridos = (min(self.fecha_fin, hoy) - self.fecha_inicio).days
+        dias_transcurridos = max(0, dias_transcurridos)  # Evitar negativos
+        porcentaje = (dias_transcurridos / total_dias) * 100
+        
+        return min(porcentaje, 100)  # Limitar a 100%
     
     @property
     def dias_restantes(self):
