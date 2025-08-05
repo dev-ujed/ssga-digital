@@ -32,15 +32,15 @@ class SubirExcelForm(forms.ModelForm):
 class BuscarFolioForm(forms.Form):
     folio = forms.CharField(
         label='Ingrese el folio a buscar',
-        max_length=20,
-        widget=forms.TextInput(attrs={'placeholder': 'Ej: 123456'})
+        max_length=15,
+        widget=forms.TextInput(attrs={'placeholder': 'Ej: UJED2025'})
     )
 
-    def clean_folio(self):
-        folio = self.cleaned_data['folio']
-        if not folio.isdigit():
-            raise forms.ValidationError("El folio debe ser numérico")
-        return folio
+    # def clean_folio(self):
+    #     folio = self.cleaned_data['folio']
+    #     if not folio.isdigit():
+    #         raise forms.ValidationError("El folio debe ser numérico")
+    #     return folio
     
 
 class AddProductoForm(forms.ModelForm):
@@ -49,7 +49,7 @@ class AddProductoForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('archivo',)
         widgets = {
-            'folio': forms.NumberInput(attrs={'class': 'form-control', 'autofocus': 'true'}),
+            'folio': forms.TextInput(attrs={'class': 'form-control', 'autofocus': 'true'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'figura': forms.TextInput(attrs={'class': 'form-control'}),
             'actividad': forms.TextInput(attrs={'class': 'form-control'}),

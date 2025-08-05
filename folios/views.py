@@ -42,7 +42,6 @@ class ParticipantesListView(ListView):
     model = Producto 
     context_object_name = 'participantes'
     template_name = 'participantes.html'
-    paginate_by = 10  # Opcional: si quieres paginación
 
     def get_queryset(self):
         query = self.request.GET.get('q')  # 'q' es el nombre del parámetro de búsqueda
@@ -50,7 +49,7 @@ class ParticipantesListView(ListView):
             # Filtra los resultados (ajusta los campos según tu modelo)
             return Producto.objects.filter(
                 Q(actividad__icontains=query) | 
-                Q(folio__icontains=query) |
+                Q(folio__icontains=query) |  
                 Q(nombre__icontains=query) 
             )
         return super().get_queryset()
@@ -65,8 +64,8 @@ def buscar_folio(request):
     if request.method == 'POST':
         form = BuscarFolioForm(request.POST)
         if form.is_valid():
-            folio = form.cleaned_data['folio']
-            productos = Producto.objects.filter(folio=int(folio))
+            folio = form.cleaned_data['folio'].strip()  # Eliminar espacios
+            productos = Producto.objects.filter(folio__iexact=folio)  # Buscar como texto
             return render(request, 'resultado_folio.html', {
                 'productos': productos,
                 'folio_buscado': folio,
@@ -74,8 +73,7 @@ def buscar_folio(request):
     else:
         form = BuscarFolioForm()
     
-    return render(request, 'validacion_folio.html', {'form': form})    
-
+    return render(request, 'validacion_folio.html', {'form': form})
 
 class AddParticipante(CreateView):
     model = Producto
