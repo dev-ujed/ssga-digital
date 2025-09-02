@@ -56,4 +56,5 @@ class AddProductoForm(forms.ModelForm):
             'periodo': forms.TextInput(attrs={'class': 'form-control'}),
             'autoridad_uno': forms.TextInput(attrs={'class': 'form-control'}),
             'autoridad_dos': forms.TextInput(attrs={'class': 'form-control'}),
+            'autoridad_tres': forms.TextInput(attrs={'class': 'form-control'}),
         }

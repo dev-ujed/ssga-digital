@@ -19,6 +19,7 @@ class Producto(models.Model):
     periodo = models.CharField(max_length=255, null=True, blank=True)
     autoridad_uno = models.CharField(max_length=255, null=True, blank=True)
     autoridad_dos = models.CharField(max_length=255, null=True, blank=True)
+    autoridad_tres = models.CharField(max_length=255, null=True, blank=True)
     archivo = models.ForeignKey(  # Opcional: Relacionar productos con el archivo
         ArchivoExcel, 
         on_delete=models.CASCADE,
@@ -39,7 +40,7 @@ def procesar_excel(sender, instance, created, **kwargs):
             df = pd.read_excel(instance.archivo.path)
             
             # Validar estructura del Excel
-            required_columns = ['folio', 'nombre', 'figura', 'actividad', 'periodo', 'autoridad_uno', 'autoridad_dos']
+            required_columns = ['folio', 'nombre', 'figura', 'actividad', 'periodo', 'autoridad_uno', 'autoridad_dos', 'autoridad_tres']
             if not all(col in df.columns for col in required_columns):
                 raise ValueError("El archivo no tiene las columnas requeridas")
             
@@ -54,6 +55,7 @@ def procesar_excel(sender, instance, created, **kwargs):
                     periodo=row['periodo'],
                     autoridad_uno=row['autoridad_uno'],
                     autoridad_dos=row['autoridad_dos'],
+                    autoridad_tres=row['autoridad_tres'],
                     archivo=instance
                 ))
             

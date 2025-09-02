@@ -5,7 +5,7 @@
 
 <style>
     body {
-        background-image: url("{% static 'images/school.png' %}");
+        background-image: url("{% static 'images/bg_4.jpg' %}");
         background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
                 background-position: center; /* Centra la imagen */
                 background-repeat: no-repeat; /* No repetir la imagen */
@@ -45,7 +45,7 @@
 <div class="container mt-4" style="background-color: #212529; color: #fff;">
     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
         <div class="mb-3 mb-md-0">
-            <img src="{% static 'images/logo-ujed.2025.png' %}" alt="" class="img-fluid" style="max-width: 90px; margin: 5px;">
+            <img src="{% static 'images/frontis.png' %}" alt="" class="img-fluid" style="max-width: 90px; margin: 5px;">
         </div>
         <div class="text-center text-md-start">
             <h2>Universidad Juárez del Estado de Durango</h2>
@@ -72,6 +72,7 @@
                 <p>Nombre de autoridades que firman la constancia: </p>
                 <p class="autoridades"><i class="bi bi-person-check-fill"></i> {{ i.autoridad_uno }}</p>
                 <p class="autoridades"><i class="bi bi-person-check-fill"></i> {{ i.autoridad_dos }}</p>
+                <p class="autoridades"><i class="bi bi-person-check-fill"></i> {{ i.autoridad_tres }}</p>
             </div>
             <div class="card-footer text-start">
                 <p>FOLIO<span class="folio"> {{ folio_buscado }}</span></p>

@@ -24,7 +24,7 @@ class CursoForm(forms.ModelForm):
         widgets = {
             'folio': forms.NumberInput(attrs={'class': 'form-control', 'autofocus': 'true'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
             'periodo': forms.Select(attrs={'class': 'form-control'}),
             'status': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'cupo': forms.NumberInput(attrs={'class': 'form-control'}),
