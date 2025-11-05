@@ -23,6 +23,7 @@ urlpatterns = [
     path('eliminar-curso/<int:pk>/', views.EliminarCursoView.as_view(), name='eliminar_curso'),
     path('editar_curso/<int:pk>', views.CursoUpdateView.as_view(),          name='editar_curso'),
     path('obtener_cv/<int:pdf_id>/', views.obtener_cv,    name='obtener_cv'),
+    path('obtener_flayer/<int:pdf_id>/', views.obtener_flayer,    name='obtener_flayer'),
     path('cursos/<int:curso_id>/usuarios/', views.UsuariosCursoListView.as_view(), name='usuarios-curso'),
     #;;;;;;;;;;;;;;;; Maestros
     path('maestros/', views.MaestroListView.as_view(), name='maestros'),

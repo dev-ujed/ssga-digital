@@ -29,6 +29,7 @@ class CursoForm(forms.ModelForm):
             'status': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'cupo': forms.NumberInput(attrs={'class': 'form-control'}),
             'maestros': forms.CheckboxSelectMultiple(),
+            'flayer': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
 

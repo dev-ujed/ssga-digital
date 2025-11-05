@@ -20,7 +20,7 @@
   
   /* Estilos para el contenedor de cards */
   .cards-container {
-    margin-top: 100px;
+    margin-top: 70px;
     margin-bottom: 50px;
   }
   
@@ -39,7 +39,7 @@
   }
   
   .card-header {
-    background: linear-gradient(to right, #4b6cb7, #182848);
+    background: linear-gradient(to right, #951823, #eb0002);
     color: white;
     border-radius: 15px 15px 0 0 !important;
     padding: 20px;
@@ -56,7 +56,7 @@
   }
   
   .btn-dark {
-    background: linear-gradient(to right, #182848, #4b6cb7);
+    background: linear-gradient(to right, #a87f3f, #b79a64);
     border: none;
     padding: 10px 25px;
     font-weight: 600;
@@ -73,8 +73,8 @@
   }
   
   .btn-outline-link {
-    color: #182848;
-    border: 1px solid #4b6cb7;
+    color: #a87f3f;
+    border: 1px solid #a87f3f;
     border-radius: 30px;
     padding: 5px 15px;
     text-decoration: none;
@@ -84,7 +84,7 @@
   }
   
   .btn-outline-link:hover {
-    background: linear-gradient(to right, #4b6cb7, #182848);
+    background: linear-gradient(to right, #a87f3f, #b79a64);
     color: white;
     text-decoration: none;
   }
@@ -176,7 +176,7 @@
 </style>
 
 <div class="container" style="margin-top: 10px;">
-      <h2 style="text-align: left;"><a class="bi bi-arrow-left-circle" href="{% url 'cursos' %}"></a></h2>
+      <h2 style="text-align: left;"><a class="bi bi-arrow-left-circle text-white" href="{% url 'cursos' %}"></a></h2>
 </div>
 
 <div class="container cards-container ">
@@ -217,6 +217,14 @@
               </li>
             {% endfor %}
           </ul>
+
+          <p>
+            <p><strong>Flayer represenativo:</strong></p>
+                <a href="{% url 'obtener_flayer' curso.id %}" class="btn btn-outline-link" target="_blank">
+                  <i class="bi bi-person-vcard-fill"></i><i class="bi bi-binoculars-fill"></i>
+                </a>
+          </p>
+
         </div>
 
         <div class="card-footer">
@@ -249,7 +257,7 @@
     <div class="col">
       <div class="card text-center h-100">
         <div class="card-header">
-          <h1><i class="bi bi-calendar-check course-icon"></i> Detalles del Curso</h1>
+          <h1><i class="bi bi-calendar-check course-icon"></i> Más detalles del Curso</h1>
         </div>
         <div class="card-body">
           <div class="text-start">

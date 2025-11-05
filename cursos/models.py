@@ -89,6 +89,7 @@ class Curso(models.Model):
     status = models.BooleanField(default=False)
     cupo = models.IntegerField(null=True)
     maestros = models.ManyToManyField(Maestro, related_name='cursos')
+    flayer = models.FileField(upload_to='flayers/', null=True, blank=True)
 
 
     def inscritos_count(self):

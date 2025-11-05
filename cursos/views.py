@@ -234,6 +234,12 @@ def obtener_cv(request, pdf_id):
     return response
 
 
+def obtener_flayer(request, pdf_id):
+    pdf = get_object_or_404(Curso, pk = pdf_id)
+    response = FileResponse(pdf.flayer, content_type='application/pdf')
+    return response
+
+
 class MapaSitioView(View):
     template_name = 'mapa.html'
 
