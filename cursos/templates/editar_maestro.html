@@ -11,16 +11,24 @@
               background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
               min-height: 100vh; /* Asegura que cubra toda la pantalla */
               margin: 0; /* Elimina márgenes */
-          }
+    }
+
+    .container{
+        margin-top: 60px;
+        max-width: 650px;
+    }
 </style>
 
-<div class="container d-flex justify-content-center" style="margin-top: 50px;">
-    <div class="card mb-3 text-center" style="max-width: 900px;">
-        <div class="card-body">
-            <h2 class="card-title">
-                <i class="bi bi-pencil-fill"></i>
-                Editar Maestro
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-title text-center bg-dark text-white">
+            <h2>
+                <i class="bi bi-pencil"></i>
+                Actualizar registro
             </h2>
+            <span>{{ maestro.nombre }}</span>
+        </div>
+        <div class="card-body">
             <form method="post" id="editar-maestro-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}

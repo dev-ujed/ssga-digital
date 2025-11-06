@@ -12,6 +12,16 @@
      min-height: 100vh;
      margin: 0;
    }
+
+   /* Overlay oscuro para mejorar legibilidad */
+   body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: -1;
+   }
+
    .container {
       margin-top: 90px;
       max-width: 650px;

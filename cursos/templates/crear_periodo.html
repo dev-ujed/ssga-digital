@@ -17,11 +17,9 @@
       box-sizing: border-box;
    }
 
-   h2, p{
+   h2{
       color: #fff;
    }
-
-
 
    .foot {
       position: absolute;
@@ -33,17 +31,20 @@
 
 </style>
 
+<div style="margin-top: 50px;">
+   <h2 style="text-align: center;"><a class="bi bi-arrow-left-circle" href="{% url 'periodos' %}"></a> Nuevo Periodo</h2>
+</div>
+
 <div class="container" style="margin-top: 20px;">
-   <div>
-      <h2 style="text-align: center;"><a class="bi bi-arrow-left-circle" href="{% url 'cursos_admin' %}"></a>Nuevo Periodo</h2>
-   </div>
- <form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="d-grid gap-2">
-      <button class="btn btn-secondary" type="submit">Guardar</button>
-    </div> 
-   </form>
+   <div class="card text-center">
+      <form action="" method="post">
+         {% csrf_token %}
+         {{ form.as_p }}
+         <div class="d-grid gap-2">
+            <button class="btn btn-secondary" type="submit">Guardar</button>
+         </div> 
+      </form>
+   </div>   
 </div>
 
 <div class="foot">

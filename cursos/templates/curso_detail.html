@@ -217,13 +217,17 @@
               </li>
             {% endfor %}
           </ul>
-
+          
+          {% if curso.flayer %}
           <p>
             <p><strong>Flayer represenativo:</strong></p>
                 <a href="{% url 'obtener_flayer' curso.id %}" class="btn btn-outline-link" target="_blank">
                   <i class="bi bi-person-vcard-fill"></i><i class="bi bi-binoculars-fill"></i>
                 </a>
           </p>
+          {% else %}
+
+          {% endif %}
 
         </div>
 
