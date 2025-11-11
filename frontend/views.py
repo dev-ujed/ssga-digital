@@ -19,6 +19,8 @@ from django.db.models import Q  # Para búsquedas más complejas
 from django.http import Http404
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.db import IntegrityError
+
 
 
 # Create your views here.
@@ -60,28 +62,28 @@ class LogoutView(View):
 def user_register(request):
     if request.method == 'GET':
         return render(request, 'signup.html', {
-            'form': UserCreationForm 
+            'form': UserCreationForm()
         })
     else:
         if request.POST['password1'] == request.POST['password2']:
             try:
-                user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
+                user = User.objects.create_user(
+                    username=request.POST['username'], 
+                    password=request.POST['password1']
+                )
                 user.save()
-                # Añade un mensaje de éxito
                 messages.success(request, 'Usuario creado correctamente.')
-                # Redirige al usuario a la página de login
                 return redirect('login')
-            except:
-                # return HttpResponse('el usuario ya existe')
+            except IntegrityError:
+                messages.error(request, 'El usuario ya existe')
                 return render(request, 'signup.html', {
-                    'form': UserCreationForm,
-                    'error' : 'Usuario ya existe' 
+                    'form': UserCreationForm()
                 })
-        # return HttpResponse('passwords no coinciden')
+        messages.error(request, 'Las contraseñas no coinciden')
         return render(request, 'signup.html', {
-            'form': UserCreationForm, 
-            'error': 'Passwords no coinciden'
+            'form': UserCreationForm()
         })
+    
 
 class EventosCreateView(CreateView):
     model = Evento

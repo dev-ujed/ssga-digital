@@ -154,6 +154,29 @@
     </div>  
 </div>
 
+{% if mostrar_alerta %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      Swal.fire({
+        title: "Completa tu perfil",
+        text: "Para inscribirte a un curso deberas llenar los datos de tu perfil ¿Deseas llenar los datos ahora?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, ir al perfil",
+        cancelButtonText: "No mostrar de nuevo",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{% url 'perfil' %}";  // Cambia 'perfil' por tu URL real
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Desactivar alerta en futuras visitas
+          fetch("{% url 'desactivar_alerta' %}");
+        }
+      });
+    });
+  </script>
+{% endif %}
+
 {% include 'layouts/footer.html' %}
 
 {% endblock %}

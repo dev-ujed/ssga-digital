@@ -230,16 +230,22 @@
                 <th>APELLIDOS</th>
                 <th>NOMBRE</th>
                 <th>FECHA INSCRIPCION</th>
+                <th>ACCIONES</th>
             </tr>
         </thead>
         <tbody>
             {% for inscripcion in inscripciones %}
-            <tr>
+            <tr id="row-{{ inscripcion.id }}">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ inscripcion.usuario.profile.matricula }}</td>
                 <td>{{ inscripcion.usuario.profile.apellido }}</td>
                 <td>{{ inscripcion.usuario.profile.nombre }}</td>
                 <td>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarInscripcion({{ inscripcion.id }})">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </td>
             </tr>
         {% empty %}
             <tr>
@@ -251,6 +257,53 @@
 </div>
 
 {% include "layouts/footer.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function eliminarInscripcion(id) {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción eliminará la inscripción del alumno.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+        fetch(`{% url 'eliminar_inscripcion' 0 %}`.replace('0', id), {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById(`row-${id}`).remove();
+          Swal.fire('Eliminado', 'La inscripción ha sido eliminada.', 'success');
+        }
+      });
+    }
+  });
+}
+
+// Función para obtener el token CSRF de las cookies
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
 
 
 {% endblock %}

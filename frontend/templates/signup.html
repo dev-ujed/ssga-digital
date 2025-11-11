@@ -20,18 +20,20 @@
         <div class="card mb-3">
             <h2 class="card-header">Registrarme!</h2>
             <div class="card-body">
+            {% comment %} {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }} 
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %} {% endcomment %}
               <div class="alert alert-warning" role="alert">
                 Favor utilizar tu correo institucional o algun otro como nombre de usuario.
               </div>
             {{ form }}
             <button class="btn btn-sm float-end" type="submit" style="background-color: #212529; color: #fff;">Registrarme</button>
-            <!-- {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-success">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %} -->
           </div>
         </div>
     </form>

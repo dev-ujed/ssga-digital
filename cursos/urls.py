@@ -24,7 +24,10 @@ urlpatterns = [
     path('editar_curso/<int:pk>', views.CursoUpdateView.as_view(),          name='editar_curso'),
     path('obtener_cv/<int:pdf_id>/', views.obtener_cv,    name='obtener_cv'),
     path('obtener_flayer/<int:pdf_id>/', views.obtener_flayer,    name='obtener_flayer'),
+
     path('cursos/<int:curso_id>/usuarios/', views.UsuariosCursoListView.as_view(), name='usuarios-curso'),
+    path('eliminar-inscripcion/<int:inscripcion_id>/', views.EliminarInscripcionView.as_view(), name='eliminar_inscripcion'),
+    
     #;;;;;;;;;;;;;;;; Maestros
     path('maestros/', views.MaestroListView.as_view(), name='maestros'),
     path('registrar_maestro/', views.MaestroCreateView.as_view(), name='add_maestro'),
@@ -33,6 +36,7 @@ urlpatterns = [
     # map
     path('mapa-sitio/', views.MapaSitioView.as_view(), name='mapa_sitio'),
     path('editar_perfil/', views.EditarPerfil.as_view(), name='editar_perfil'),
+    path('desactivar-alerta/', views.desactivar_alerta, name='desactivar_alerta'),
 ]
 
 if settings.DEBUG:

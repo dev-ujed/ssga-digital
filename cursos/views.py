@@ -71,12 +71,23 @@ class EliminarPeriodo(DeleteView):
 def detail(request, pk):
     curso = get_object_or_404(Curso, pk=pk)
 
+    # 🔒 Verificar si el perfil está completo
+    try:
+        profile = request.user.profile
+        campos_obligatorios = [profile.nombre, profile.apellido, profile.matricula]
+        if not all(campos_obligatorios):
+            messages.warning(request, "Por favor, completa tu perfil antes de inscribirte en un curso.")
+            return redirect('editar_perfil')  # 👉 redirige a la vista donde el usuario llena su perfil
+    except Profile.DoesNotExist:
+        messages.warning(request, "Debes crear tu perfil antes de inscribirte.")
+        return redirect('perfil')
+
+    # Procesamiento normal del formulario
     if request.method == 'POST':
         form = InscripcionForm(request.POST)
         if form.is_valid():
             try:
                 with transaction.atomic():
-                    # Bloquear el curso para evitar condiciones de carrera
                     curso_bloqueado = Curso.objects.select_for_update().get(pk=curso.pk)
 
                     # Verificar inscripción existente
@@ -89,7 +100,6 @@ def detail(request, pk):
                         messages.error(request, "El curso no tiene cupos disponibles.")
                         return redirect('curso_detail', pk=pk)
                     
-                    
                     # Crear la inscripción
                     inscripcion = form.save(commit=False)
                     inscripcion.curso = curso_bloqueado
@@ -100,7 +110,7 @@ def detail(request, pk):
                     return redirect('curso_detail', pk=pk)
                     
             except Exception as e:
-                messages.error(request, f" Error en la inscripción: {str(e)}")
+                messages.error(request, f"Error en la inscripción: {str(e)}")
                 return redirect('curso_detail', pk=pk)
     else:
         form = InscripcionForm()
@@ -108,8 +118,8 @@ def detail(request, pk):
     return render(request, 'curso_detail.html', {
         'curso': curso,
         'form': form,
-        'cupos_disponibles': curso.cupos_disponibles()  # Para mostrar en el template
-    }) 
+        'cupos_disponibles': curso.cupos_disponibles()
+    })
     
 
 
@@ -149,7 +159,23 @@ class InscripcionDeleteView(DeleteView):
 class CursosListView(ListView):
     model = Curso
     template_name = 'cursos.html'  
-    context_object_name = 'cursos'   
+    context_object_name = 'cursos'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Solo mostrar el alert si el usuario no lo desactivó
+        mostrar_alerta = not self.request.session.get('alerta_deshabilitada', False)
+        context['mostrar_alerta'] = mostrar_alerta
+
+        return context   
+    
+
+def desactivar_alerta(request):
+    request.session['alerta_deshabilitada'] = True
+    request.session.modified = True
+    return JsonResponse({'status': 'ok'})
+
 
 # @admin
 class CursoCreateView(CreateView):
@@ -185,7 +211,13 @@ class UsuariosCursoListView(ListView):
         return context
     
 
-        
+class EliminarInscripcionView(View):
+    def post(self, request, *args, **kwargs):
+        inscripcion_id = kwargs.get('inscripcion_id')
+        inscripcion = get_object_or_404(Inscripcion, id=inscripcion_id)
+        inscripcion.delete()
+        return JsonResponse({'success': True})     
+       
 
 class CursoUpdateView(UpdateView):
     model = Curso
@@ -198,6 +230,7 @@ class EliminarCursoView(DeleteView):
     model = Curso
     template_name = 'confirmar_eliminacion.html'
     success_url = reverse_lazy('cursos_admin')
+
 
 #;;;;;;;;;;;;; MAESTROS ;;;;;;;;;;;;;;;;;;;;;;;;
 
