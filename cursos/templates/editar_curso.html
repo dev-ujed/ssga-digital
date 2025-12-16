@@ -28,7 +28,7 @@
             <p>{{ curso.nombre }}</p>
         </div>
         <div class="card-body">
-            <form method="post" id="editar-curso-form">
+            <form method="post" id="editar-curso-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class="d-grid gap-2">

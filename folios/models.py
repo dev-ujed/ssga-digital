@@ -13,7 +13,7 @@ class ArchivoExcel(models.Model):
 
 class Producto(models.Model):
     folio = models.CharField(max_length=20, null=True, blank=True)
-    nombre = models.CharField(max_length=100, null=True, blank=True)
+    nombre = models.TextField(null=True, blank=True)
     figura = models.CharField(max_length=90, null=True, blank=True)
     actividad = models.CharField(max_length=255, null=True, blank=True)
     periodo = models.CharField(max_length=255, null=True, blank=True)
