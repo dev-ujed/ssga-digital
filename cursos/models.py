@@ -14,9 +14,11 @@ class Profile(models.Model):
     matricula = models.CharField(max_length=10, null=True, blank=True)
     nombre = models.CharField(max_length=90, null=True, blank=True)
     apellido = models.CharField(max_length=90, null=True, blank=True)
+    telefono = models.CharField(max_length=20, null=True, blank=True, verbose_name='Teléfono')
+    correo_electronico = models.EmailField(max_length=254, null=True, blank=True, verbose_name='Correo electrónico')
 
     def __str__(self):
-        return f"{self.user}, {self.matricula}"
+        return f"{self.user}, {self.matricula}, {self.nombre}, {self.apellido}, {self.telefono}, {self.correo_electronico}"
 
 
 ################################
