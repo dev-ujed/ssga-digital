@@ -3,15 +3,24 @@
 {% block content %}
 
 <style>
-    body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-              background-position: center; /* Centra la imagen */
-              background-repeat: no-repeat; /* No repetir la imagen */
-              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-              min-height: 100vh; /* Asegura que cubra toda la pantalla */
-              margin: 0; /* Elimina márgenes */
-          }
+   body {
+     background-image: url("{% static 'images/bg_4.jpg' %}");
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     min-height: 100vh;
+     margin: 0;
+   }
+
+   /* Overlay oscuro para mejorar legibilidad */
+   body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: -1;
+   }
     .container {
         margin-top: 90px;
     }
@@ -23,7 +32,7 @@
 
 <div class="container mt-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4">
-           <h2 class="mb-3 mb-md-0"><a class="bi bi-arrow-left-circle text-white" href="{% url 'cursos_admin' %}"></a></i> Periodos</h2>
+           <h2 class="mb-3 mb-md-0"><a class="bi bi-arrow-left-circle text-white" href="{% url 'cursos_admin' %}"></a></i> PERIODOS</h2>
            <div class="d-flex flex-column flex-sm-row gap-2">
                 <a class="btn btn-dark btn-md" href="{% url 'crear_periodos' %}">
                    <i class="bi bi-plus-lg"></i> Nuevo Periodo
@@ -37,8 +46,8 @@
         <thead>
             <tr class="table-dark">
                 <th>ID</th>
-                <th>Periodo</th>
-                <th>Acciones </th>
+                <th>PERIODO</th>
+                <th>ACCIONES </th>
             </tr>
         </thead>
         <tbody>

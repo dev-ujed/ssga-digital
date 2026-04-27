@@ -3,53 +3,177 @@
 {% block content %}
 
 <style>
-   body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-      background-position: center; /* Centra la imagen */
-      background-repeat: no-repeat; /* No repetir la imagen */
-      background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-      min-height: 100vh; /* Asegura que cubra toda la pantalla */
-      margin: 0; /* Elimina márgenes */   
-      position: relative;
-      min-height: 82vh;
-      padding-bottom: 50px; /* Igual a la altura del footer */
-      box-sizing: border-box;
-   }
+    body {
+        background-image: url("{% static 'images/bg_4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-   h2{
-      color: #fff;
-   }
+    /* Overlay oscuro sutil para que la tarjeta blanca resalte más */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.3); /* Un poco más suave para no matar los colores del fondo */
+        z-index: -1;
+    }
 
-   .foot {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 50px; /* Altura fija del footer */
-   }
+    /* Tarjeta estilo cristal (Glassmorphism) */
+    .card-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        overflow: hidden;
+    }
+    
+    /* Encabezado del formulario */
+    .card-header-custom {
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+        color: white;
+        padding: 20px 25px;
+        border-bottom: none;
+    }
 
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
 
+    .btn-save {
+        background-color: #212529;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save:hover {
+        background-color: #343a40;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(33, 37, 41, 0.3);
+        color: #fff;
+    }
+    
+    /* Botón de regresar integrado */
+    .back-btn-header {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .back-btn-header:hover {
+        color: #ffffff;
+    }
 </style>
 
-<div style="margin-top: 50px;">
-   <h2 style="text-align: center;"><a class="bi bi-arrow-left-circle" href="{% url 'periodos' %}"></a> Nuevo Periodo</h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 100px); padding-top: 10px; padding-bottom: 40px;">
+    
+    <div class="col-12 col-md-8 col-lg-5"> <div class="card card-custom">
+            
+            <div class="card-header-custom position-relative text-center">
+                <a href="{% url 'periodos' %}" class="back-btn-header position-absolute" style="left: 20px; top: 50%; transform: translateY(-50%);" title="Regresar">
+                    <i class="bi bi-arrow-left-circle fs-4"></i>
+                </a>
+                <h3 class="mb-0 fw-bold fs-4"><i class="bi bi-calendar-plus me-2"></i> Nuevo Periodo</h3>
+            </div>
+            
+            <div class="card-body p-4 p-md-5">
+                <form method="post" id="form-periodo">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            
+                            {{ field }}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1 fw-bold">
+                                    <i class="bi bi-exclamation-circle"></i> {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <div class="text-muted small mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
+                        <button class="btn btn-light border px-4" type="button" onclick="confirmarCancelacion()">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-save px-4" type="submit" onclick="permitirEnvio()">
+                            <i class="bi bi-check2-circle me-1"></i> Guardar Periodo
+                        </button>
+                    </div> 
+                </form>
+            </div>   
+        </div>
+    </div>
 </div>
 
-<div class="container" style="margin-top: 20px;">
-   <div class="card text-center">
-      <form action="" method="post">
-         {% csrf_token %}
-         {{ form.as_p }}
-         <div class="d-grid gap-2">
-            <button class="btn btn-secondary" type="submit">Guardar</button>
-         </div> 
-      </form>
-   </div>   
-</div>
+{% include 'layouts/footer.html' %}
 
-<div class="foot">
-   {% include 'layouts/footer.html' %}
-</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    let formModificado = false;
+    let envioEnProceso = false;
+
+    // Detectar cambios
+    document.querySelectorAll('#form-periodo input, #form-periodo select, #form-periodo textarea').forEach(elemento => {
+        elemento.addEventListener('input', () => { formModificado = true; });
+        elemento.addEventListener('change', () => { formModificado = true; });
+    });
+
+    function permitirEnvio() {
+        envioEnProceso = true;
+    }
+
+    function confirmarCancelacion() {
+        if (!formModificado) {
+            window.location.href = "{% url 'periodos' %}";
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Descartar registro?',
+            text: "Los datos del periodo no se guardarán.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', 
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, descartar',
+            cancelButtonText: 'Seguir editando',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formModificado = false;
+                window.location.href = "{% url 'periodos' %}";
+            }
+        });
+    }
+
+    window.addEventListener('beforeunload', function(e) {
+        if (formModificado && !envioEnProceso) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
 
 {% endblock %}

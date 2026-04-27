@@ -94,28 +94,36 @@ class MaestroForm(forms.ModelForm):
         }
 
 
-
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['matricula', 'nombre', 'apellido']
+        # 1. Agregamos los nuevos campos a la lista
+        fields = ['matricula', 'nombre', 'apellido', 'telefono', 'correo_electronico']
         
         # Personalización de widgets
         widgets = {
             'matricula': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ej: ABC123'
+                'placeholder': 'Ej: 2023010123' # Agregué un placeholder de ejemplo opcional
             }),
             'nombre': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ej: Juan Carlos'
-
             }),
             'apellido': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Ej: Pérez Gómez'
             }),
-
+            
+            # 2. Nuevos widgets configurados
+            'telefono': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: +52 55 1234 5678'
+            }),
+            'correo_electronico': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej: usuario11@gmail.com'
+            }),
         }
         
 

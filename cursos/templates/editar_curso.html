@@ -3,15 +3,24 @@
 {% block content %}
 
 <style>
-    body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-              background-position: center; /* Centra la imagen */
-              background-repeat: no-repeat; /* No repetir la imagen */
-              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-              min-height: 100vh; /* Asegura que cubra toda la pantalla */
-              margin: 0; /* Elimina márgenes */
-    }
+   body {
+     background-image: url("{% static 'images/bg_4.jpg' %}");
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     min-height: 100vh;
+     margin: 0;
+   }
+
+   /* Overlay oscuro para mejorar legibilidad */
+   body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: -1;
+   }
 
     .container{
         max-width: 650px;

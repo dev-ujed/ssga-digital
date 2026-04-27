@@ -3,38 +3,173 @@
 {% block content %}
 
 <style>
-    body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-              background-position: center; /* Centra la imagen */
-              background-repeat: no-repeat; /* No repetir la imagen */
-              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-              min-height: 100vh; /* Asegura que cubra toda la pantalla */
-              margin: 0; /* Elimina márgenes */
-          }
-    .container {
-        margin-top: 90px;
-        max-width: 650px;
+   body {
+     background-image: url("{% static 'images/bg_4.jpg' %}");
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     min-height: 100vh;
+     margin: 0;
+   }
+
+   /* Overlay oscuro para mejorar legibilidad */
+   body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: -1;
+   }
+    
+    /* Tarjeta estilo cristal (Glassmorphism) */
+    .card-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        overflow: hidden;
     }
     
+    /* Encabezado del formulario */
+    .card-header-custom {
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+        color: white;
+        padding: 25px;
+        border-bottom: none;
+    }
+
+    /* Estilo de las etiquetas (Labels) */
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* Botón de guardar personalizado */
+    .btn-save {
+        background-color: #212529;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save:hover {
+        background-color: #343a40;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(33, 37, 41, 0.3);
+        color: #fff;
+    }
 </style>
 
-
-<form class="container" method="post" enctype="multipart/form-data">
-    <div class="card">
-        <h3 class="card-header text-center bg-dark text-light">+ Nuevo Ponente</h3>
-        <div class="card-body">
-            {% csrf_token %}
-            {{ form }}
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-dark" type="submit">Guardar</button>
-            <a class="btn btn-secondary" href="{% url 'maestros' %}">Cancelar</a>
-
+<div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 80px); padding-top: 60px; padding-bottom: 40px;">
+    
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card card-custom">
+            
+            <div class="card-header-custom text-center">
+                <h3 class="mb-0 fw-bold fs-4"><i class="bi bi-person-plus-fill me-2"></i> Registrar Nuevo Ponente</h3>
+            </div>
+            
+            <div class="card-body p-4 p-md-5">
+                <form method="post" enctype="multipart/form-data" id="form-ponente">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            
+                            {{ field }}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1 fw-bold">
+                                    <i class="bi bi-exclamation-circle"></i> {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <div class="text-muted small mt-1">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
+                        <button class="btn btn-light border px-4" type="button" onclick="confirmarCancelacion()">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-save px-4" type="submit" onclick="permitirEnvio()">
+                            Guardar Ponente
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</form>
+</div>
 
 {% include 'layouts/footer.html' %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Variables para controlar si el usuario ha modificado el formulario
+    let formModificado = false;
+    let envioEnProceso = false;
+
+    // Detectar si el usuario escribe en inputs, textareas o selecciona un archivo
+    document.querySelectorAll('#form-ponente input, #form-ponente textarea, #form-ponente select').forEach(elemento => {
+        elemento.addEventListener('input', () => {
+            formModificado = true;
+        });
+        elemento.addEventListener('change', () => {
+            formModificado = true;
+        });
+    });
+
+    // Función para que la alerta no salte al presionar "Guardar"
+    function permitirEnvio() {
+        envioEnProceso = true;
+    }
+
+    // Función para cancelar
+    function confirmarCancelacion() {
+        if (!formModificado) {
+            window.location.href = "{% url 'maestros' %}";
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Descartar registro?',
+            text: "Se perderán los datos que ya escribiste.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', 
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, descartar',
+            cancelButtonText: 'Seguir editando',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formModificado = false;
+                window.location.href = "{% url 'maestros' %}";
+            }
+        });
+    }
+
+    // Alerta nativa del navegador si intentan recargar o cerrar pestaña
+    window.addEventListener('beforeunload', function(e) {
+        if (formModificado && !envioEnProceso) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
 
 {% endblock %}

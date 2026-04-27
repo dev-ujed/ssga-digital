@@ -5,56 +5,98 @@
 
 <style>
     body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-              background-position: center; /* Centra la imagen */
-              background-repeat: no-repeat; /* No repetir la imagen */
-              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-              min-height: 100vh; /* Asegura que cubra toda la pantalla */
-              margin: 0; /* Elimina márgenes */
-          }
+        background-image: url("{% static 'images/bg_4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        margin: 0;
+    }
+    
+    /* Estilos profesionales para la tarjeta y formulario */
+    .profile-card {
+        background: rgba(255, 255, 255, 0.95); /* Fondo blanco ligeramente translúcido */
+        backdrop-filter: blur(10px); /* Efecto de desenfoque moderno */
+        border-radius: 1rem;
+        border: none;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+    }
+    
+    .btn-custom-save {
+        background-color: #212529;
+        color: #fff;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom-save:hover {
+        background-color: #343a40;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        color: #fff;
+    }
 </style>
 
-
-<div class="container d-flex justify-content-center" style="margin-top: 60px;">
-    <div class="card">
-        <div class="card-body">
-            <div class="card-header">
-                <h2 class="card-title">
-                    <h2>Editar Perfil</h2>
-                </h2>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 80px); margin-top: 10px; padding-bottom: 40px;">
+    
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="card profile-card shadow-lg">
+            
+            <div class="card-header bg-transparent border-0 pt-4 pb-0 text-center">
+                <h2 class="fw-bold text-dark mb-0">Actualizar Perfil</h2>
+                <p class="text-muted small mt-1">Actualiza tu información personal y de contacto</p>
             </div>
-            <form method="post" id="editar-parse-form">
-                {% csrf_token %}      
-                <div class="mb-3">
-                    {{ form.matricula.label_tag }}
-                    {{ form.matricula }}
-                    {% if form.matricula.errors %}
-                    <div class="text-danger">{{ form.matricula.errors }}</div>
-                    {% endif %}
-                </div>
-                
-                <div class="mb-3">
-                    {{ form.nombre.label_tag }}
-                    {{ form.nombre }}
-                </div>
-                
-                <div class="mb-3">
-                    {{ form.apellido.label_tag }}
-                    {{ form.apellido }}
-                </div>  
-                <div class="d-grid gap-2" style="margin-top: auto">
-                    <button class="btn" type="button" onclick="confirmarGuardar()" style="background-color: #212529; color: #fff;">
-                        <i class="bi bi-save"> Guardar</i>
-                    </button> 
-                    <br>          
-                </div>
-            </form>
-            <div class="d-grid gap-2" style="margin-top: auto">
-                <!-- Enlace modificado para SweetAlert -->
-                <a class="btn btn-secondary" href="#" onclick="confirmarCancelacion()">
-                    <i class="bi bi-x-square"> Cancelar</i>
-                </a>
+            
+            <div class="card-body px-4 px-md-5 py-4">
+                <form method="post" id="editar-parse-form">
+                    {% csrf_token %}      
+                    
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.matricula.label }}</label>
+                        {{ form.matricula }}
+                        {% if form.matricula.errors %}
+                            <div class="text-danger small mt-1">{{ form.matricula.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">{{ form.nombre.label }}</label>
+                            {{ form.nombre }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.apellido.label }}</label>
+                            {{ form.apellido }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label">{{ form.telefono.label }}</label>
+                            {{ form.telefono }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.correo_electronico.label }}</label>
+                            {{ form.correo_electronico }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-3 mt-5 border-top pt-4">
+                        <button class="btn btn-light border px-4" type="button" onclick="confirmarCancelacion()">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-custom-save px-4" type="button" onclick="confirmarGuardar()">
+                            Guardar Cambios
+                        </button> 
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -63,51 +105,70 @@
 {% include "layouts/footer.html" %}
 
 <script>
-        // Función para guardar cambios
-        function confirmarGuardar() {
-            Swal.fire({
-                title: '¿Guardar cambios?',
-                text: "¿Estás seguro de modificar este participante?",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, guardar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('editar-parse-form').submit(); // Envía el formulario
-                }
-            });
-        }
-        
-        // Función para cancelar edición
-        function confirmarCancelacion() {
-            Swal.fire({
-                title: '¿Descartar cambios?',
-                text: "Los cambios no guardados se perderán.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#6c757d',
-                cancelButtonColor: '#28a745',
-                confirmButtonText: 'Sí, cancelar',
-                cancelButtonText: 'Seguir editando'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "{% url 'perfil' %}"; // Redirige a la lista
-                }
-            });
-        }
-        
-        // Opcional: Alertar al cerrar la página con cambios no guardados
-        let formOriginal = document.getElementById('editar-parse-form').innerHTML;
-        
-        window.addEventListener('beforeunload', function(e) {
-            if (document.getElementById('editar-parse-form').innerHTML !== formOriginal) {
-                e.preventDefault();
-                e.returnValue = '';
+    // Variable para rastrear si el usuario ha escrito algo
+    let formModificado = false;
+
+    // Detectar cambios reales en los campos de texto
+    document.querySelectorAll('#editar-parse-form input').forEach(input => {
+        input.addEventListener('input', () => {
+            formModificado = true;
+        });
+    });
+
+    // Función para guardar cambios
+    function confirmarGuardar() {
+        Swal.fire({
+            title: '¿Guardar cambios?',
+            text: "¿Estás seguro de actualizar esta información?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#212529', // Combina con tu diseño oscuro
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true // Botón principal a la derecha (estándar de UX)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formModificado = false; // Desactivar la alerta de abandono para poder enviar
+                document.getElementById('editar-parse-form').submit();
             }
         });
+    }
+    
+    // Función para cancelar edición
+    function confirmarCancelacion() {
+        // Si no han escrito nada, salir sin preguntar
+        if (!formModificado) {
+            window.location.href = "{% url 'perfil' %}";
+            return;
+        }
+
+        // Si escribieron algo, preguntar
+        Swal.fire({
+            title: '¿Descartar cambios?',
+            text: "Los cambios no guardados se perderán.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', // Rojo para acción destructiva
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, descartar',
+            cancelButtonText: 'Seguir editando',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                formModificado = false;
+                window.location.href = "{% url 'perfil' %}";
+            }
+        });
+    }
+    
+    // Alertar al cerrar la pestaña o recargar si hay cambios no guardados
+    window.addEventListener('beforeunload', function(e) {
+        if (formModificado) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 </script>
 
 {% endblock %}

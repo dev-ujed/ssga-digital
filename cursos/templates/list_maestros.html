@@ -4,111 +4,189 @@
 
 <style>
     body {
-        background-image: url("{% static 'images/school.png' %}");
+        background-image: url("{% static 'images/bg_4.jpg' %}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
         min-height: 100vh;
         margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    h2 {
-        color: #fff;
-    }
-
-    .table-container {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    /* Contenedor principal unificado */
+    .main-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
     }
     
-    .action-btn {
-        margin-left: 5px;
+    /* Estilos de la tarjeta principal (Glassmorphism) */
+    .card-custom {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    
+    /* Encabezado de la tarjeta */
+    .card-header-custom {
+        background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+        color: white;
+        padding: 20px 30px;
+    }
+    
+    .card-header-custom h2 {
+        color: #ffffff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .back-btn {
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        color: #ffffff;
+    }
+
+    /* Estilos mejorados para la tabla */
+    .table-container {
+        padding: 20px 30px;
+    }
+
+    .table-custom {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .table-custom thead th {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+        padding: 15px;
+    }
+
+    .table-custom tbody td {
+        padding: 15px;
+        color: #212529;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table-custom tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Botones de acción en la tabla */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
     }
 </style>
 
-<div class="container mt-4">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4">
-        <h2 class="mb-3 mb-md-0 text-light">
-            <a class="bi bi-arrow-left-circle text-light me-2" href="{% url 'cursos_admin' %}"></a>
-            Lista Ponentes
-        </h2>
-        <div class="d-flex flex-column flex-sm-row gap-2">
-            <a class="btn btn-dark btn-md" href="{% url 'add_maestro' %}">
-                <i class="bi bi-plus-lg"></i> Registrar ponente
-            </a>
+<div class="main-container">
+    <div class="card-custom">
+        <div class="card-header-custom d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <h2 class="mb-3 mb-md-0 fs-3">
+                <a class="bi bi-arrow-left-circle back-btn me-3" href="{% url 'cursos_admin' %}" title="Regresar a Cursos"></a>
+                Lista de Ponentes
+            </h2>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <a class="btn btn-light btn-sm fw-bold" href="{% url 'add_maestro' %}">
+                    <i class="bi bi-person-plus-fill text-success"></i> Registrar Ponente
+                </a>
+            </div>
+        </div>
+
+        <div class="table-container table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Especialidad</th>
+                        <th class="text-center">Currículum (CV)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for maestro in maestros %}
+                    <tr id="maestro-{{ maestro.id }}">
+                        <td class="fw-bold text-muted">{{ maestro.id }}</td>
+                        <td class="fw-bold">{{ maestro.nombre|default:"-" }}</td>
+                        <td>{{ maestro.especialidad|default:"-" }}</td>
+                        <td class="text-center">
+                            {% if maestro.cv %}
+                                <a href="{% url 'obtener_cv' maestro.id %}" target="_blank" class="btn btn-outline-primary btn-sm" title="Ver documento">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i> Ver CV
+                                </a>
+                            {% else %}
+                                <span class="text-muted small fst-italic">Sin documento</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{% url 'editar_maestro' maestro.id %}" class="btn btn-outline-secondary btn-sm" title="Editar ponente">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <form method="POST" action="{% url 'eliminar_maestro' maestro.pk %}" id="form-eliminar-{{ maestro.pk }}" class="m-0">
+                                    {% csrf_token %}
+                                    <button 
+                                        type="button"
+                                        class="btn btn-outline-danger btn-sm"
+                                        data-nombre="{{ maestro.nombre|escapejs }}"
+                                        data-pk="{{ maestro.pk }}"
+                                        onclick="confirmarEliminacion(this.dataset.nombre, this.dataset.pk)"
+                                        title="Eliminar ponente">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-5">
+                            <i class="bi bi-people fs-1 d-block mb-3"></i>
+                            No hay ponentes registrados en el sistema.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>NOMBRE</th>
-                <th>ESPECIALIDAD</th>
-                <th>CV</th>
-                <th>ACCIONES</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for i in maestros %}
-            <tr id="curso-{{ i.id }}">
-                <td>{{ i.id }}</td>
-                <td>{{ i.nombre }}</td>
-                <td>{{ i.especialidad }}</td>
-                <td>
-                    {% if i.cv %}
-                        <a href="{% url 'obtener_cv' i.id %}" target="_blank"><i class="bi bi-file-richtext"></i></a>
-                    {% else %}
-                    {% endif %}
-                </td>
-                <td class="d-flex">
-                    <form method="POST" action="{% url 'eliminar_maestro' i.pk %}" id="form-eliminar-{{ i.pk }}">
-                        {% csrf_token %}
-                        <button 
-                            type="button"
-                            class="btn btn-outline-danger btn-sm"
-                            data-nombre="{{ i.nombre }}"
-                            data-pk="{{ i.pk }}"
-                            onclick="confirmarEliminacion(this.dataset.nombre, this.dataset.pk)">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </form>
-                    <a href="{% url 'editar_maestro' i.id %}" class="btn btn-outline-primary btn-sm action-btn">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="5" class="text-center py-4">
-                    <div class="alert alert-info">
-                        No hay ponentes registrados
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-
 {% include 'layouts/footer.html' %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     function confirmarEliminacion(nombreMaestro, pk) {
         Swal.fire({
             title: '¿Eliminar ponente?',
-            html: `Estás a punto de eliminar a <b>${nombreMaestro}</b>.<br>¿Continuar?`,
+            html: `Estás a punto de eliminar a:<br><b class="text-danger">"${nombreMaestro}"</b>.<br>Esta acción no se puede deshacer.`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
             confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById(`form-eliminar-${pk}`).submit();

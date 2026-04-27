@@ -16,7 +16,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
-
+from django.db.models import Q
 
 # Vista para Perfil
 class UserRecordsView(ListView):
@@ -156,10 +156,28 @@ class InscripcionDeleteView(DeleteView):
 #;;;;;;;;;;;;;; CURSOS  ;;;;;;;;;;;;;;;;
 
 # @usuarios
+# @usuarios
 class CursosListView(ListView):
     model = Curso
     template_name = 'cursos.html'  
     context_object_name = 'cursos'
+
+    def get_queryset(self):
+        # 1. Obtenemos la lista original de todos los cursos
+        queryset = super().get_queryset()
+        
+        # 2. Capturamos lo que el usuario escribió en la barra de búsqueda (el name="q")
+        query = self.request.GET.get('q')
+        
+        # 3. Si el usuario escribió algo, filtramos los resultados
+        if query:
+            queryset = queryset.filter(
+                Q(nombre__icontains=query) |          # Busca en el nombre del curso
+                Q(descripcion__icontains=query) |     # O busca en la descripción
+                Q(maestros__nombre__icontains=query)  # O busca por el nombre del maestro
+            ).distinct() # .distinct() evita que un curso salga duplicado si coincide en varios campos
+            
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -168,7 +186,7 @@ class CursosListView(ListView):
         mostrar_alerta = not self.request.session.get('alerta_deshabilitada', False)
         context['mostrar_alerta'] = mostrar_alerta
 
-        return context   
+        return context 
     
 
 def desactivar_alerta(request):
