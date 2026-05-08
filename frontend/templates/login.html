@@ -1,143 +1,241 @@
 {% extends 'layouts/main.html' %}
 {% load static %}
+
 {% block content %}
-
 <style>
-  body {
-    background-image: url("{% static 'images/school.png' %}");
-    background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-            background-position: center; /* Centra la imagen */
-            background-repeat: no-repeat; /* No repetir la imagen */
-            background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-            min-height: 100vh; /* Asegura que cubra toda la pantalla */
-            margin: 0; /* Elimina márgenes */
-        }
+    /* Fondo responsivo con capa oscura para mejor lectura */
+    body {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("{% static 'images/bg_4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+    }
 
-  .footer {
-      background-color: #ba0000;
-      color: #ffffff;
-      padding: 20px 0;
-  }
-  .footer a {
-      color: #ffffff;
-      text-decoration: none;
-  }
-  .footer a:hover {
-      text-decoration: underline;
-  }
+    /* Tarjeta de login moderna */
+    .login-card {
+        background-color: rgba(33, 37, 41, 0.95);
+        border: none;
+        border-top: 4px solid #;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+    }
+
+    /* Botón UJED */
+    .btn-ujed {
+        background-color: #ba0000;
+        color: #ffffff;
+        transition: all 0.3s ease;
+    }
+    .btn-ujed:hover {
+        background-color: #8c0000;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    /* --- NUEVOS ESTILOS PARA LOS INPUTS CON ÍCONOS --- */
+    .custom-input-group .input-group-text {
+        background-color: #2b3035;
+        border: 1px solid #495057;
+        border-right: none; /* Quitamos el borde derecho para que se fusione con el input */
+        color: #adb5bd;
+        border-radius: 5px 0 0 5px;
+        transition: all 0.3s ease;
+    }
+    
+    /* Estilos forzados para el form-control de Bootstrap */
+    .custom-input-group .form-control {
+        flex: 1 1 auto;
+        padding: 0.8rem 0.8rem 0.8rem 0;
+        border-radius: 0 5px 5px 0;
+        border: 1px solid #495057;
+        border-left: none;
+        background-color: #2b3035 !important; /* Fuerza el fondo oscuro */
+        color: #ffffff !important; /* Fuerza que el texto que escribas sea blanco */
+        transition: all 0.3s ease;
+    }
+    
+    /* Estilo específico para el Placeholder (el texto "correo" y "contraseña") */
+    .custom-input-group .form-control::placeholder {
+        color: #adb5bd !important; /* Gris claro para que resalte */
+        opacity: 1; /* Necesario en Firefox */
+    }
+
+    /* Efecto al hacer foco (clic) en el input */
+    .custom-input-group .form-control:focus {
+        background-color: #2b3035 !important;
+        color: #ffffff !important;
+        border-color: #ba0000 !important;
+        box-shadow: none !important; /* Quita la sombra azul por defecto de Bootstrap */
+    }
+
+    /* Efecto al hacer clic: el borde del input y del ícono se pintan de rojo UJED */
+    .custom-input-group:focus-within .input-group-text,
+    .custom-input-group:focus-within input {
+        border-color: #ba0000;
+    }
+    
+    .custom-input-group:focus-within .input-group-text {
+        color: #ba0000;
+    }
+    /* --------------------------------------------------- */
+
+    /* Textos del footer SIEMPRE visibles */
+    .footer-text {
+        color: #f8f9fa !important;
+        font-size: 0.95rem;
+    }
+
+    /* Enlaces del footer y registro */
+    .transition-link {
+        color: #f8f9fa !important;
+        transition: color 0.3s ease;
+    }
+    .transition-link:hover {
+        color: #ba0000 !important;
+    }
+
+    /* Enlace específico para el registro */
+    .register-link {
+        color: #ba0000 !important;
+    }
+    .register-link:hover {
+        color: #f8f9fa !important;
+        text-decoration: underline !important;
+    }
+
+    /* Tamaño de iconos aumentado */
+    .icon-large {
+        font-size: 1.5rem;
+        vertical-align: middle;
+    }
 </style>
 
-{% if messages %}
-<div class="messages">
-  {% for message in messages %}
-      <!-- <p>{{ message }}</p> -->
-  {% endfor %}
-</div>
-{% endif %}
-<div class="content-grid" style="margin-top: 60px;">
-  <div class="card mb-3 text-center" style="max-width: 540px; background-color: #212529;">
-      <div class="row g-0">
-          <div class="col-md-4" style="display: flex; align-items: center; justify-content: center;">
-              <img src="{% static 'images/ssga_2025.png' %}" class="img-fluid rounded-start" style="max-width: 90px; padding: 10px;" alt="...">
-          </div>
-          <div class="col-md-8" style="color: #ffffff;">
-              <div class="card-body" style="color: #fff;">
-                  <h3 class="card-title" style="color: #ffffff;">SSGA</h3>
-                  <p class="card-text">Acceder a la plataforma</p>
-                  <form method="post">
-                      {% csrf_token %}
-                      <div class="form-group" style="color: #ffffff;">
-                          {{ form.username.label_tag }}
-                          {{ form.username }}
-                      </div> 
-                      <div class="form-group" style="color: #ffffff;">
-                          {{ form.password.label_tag }}
-                          {{ form.password }}
-                      </div>
-                      <br>
-                      <button type="submit" class="btn" style="background-color: #333333; color: #ffffff;">Iniciar sesión</button>
-                  </form>
-                  <br> 
-              </div>
-          </div>
-      </div>
-  </div>
-</div>
+<!-- Contenedor principal para organizar Login y Footer -->
+<div class="d-flex flex-column" style="min-height: calc(100vh - 80px);">
 
-<!-- Main Header -->
-<header class="bg-dark text-white py-4 mt-5">  <!-- Using Bootstrap classes -->
-  <div class="container">
-    <div class="d-flex flex-column align-items-center">
-      <!-- Logo Container -->
-      <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 mb-3">
-        <!-- <a href="#" class="navbar-brand">
-          <img src="{% static 'images/ssga_2025.png' %}" 
-               alt="University Logo" 
-               class="img-fluid" 
-               style="max-width: 70px; height: auto;">
-        </a> -->
-        <a href="#" class="navbar-brand">
-          <img src="{% static 'images/Identidad.png' %}" 
-               alt="University Identity" 
-               class="img-fluid" 
-               style="max-width: 130px; height: auto;">
-        </a>
-      </div>
-      
-      <!-- Title -->
-      <h1 class="h4 mb-0 text-center">SUBSECRETARÍA GENERAL ACADÉMICA</h1>
-    </div>
-  </div>
-</header>
+    <!-- Contenido Principal (Login Centrado) -->
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            <!-- Mensajes de Django -->
+            {% comment %} {% if messages %}
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6">
+                    {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %} {% endcomment %}
 
-<footer class="bg-dark text-white py-3 m-0">  <!-- Reduce el padding y elimina el margen -->
-  <div class="container">
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-3">
-        <h2 class="h6 fw-bold mb-3">Dirección</h2>
-        <address class="mb-0">
-          Cuarto piso, Edificio de la Librería UJED.<br>
-          Victoria Sur 200, esquina con 20 de Noviembre<br>
-          Zona Centro
-        </address>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <h2 class="h6 fw-bold mb-3">Contacto</h2>
-        <ul class="list-unstyled">
-          <li>Tel: <a href="tel:+526188271248" class="text-white text-decoration-none">+52(618) 827-12-48</a></li>
-          <li>Email: <a href="mailto:subsecretaria.academica@ujed.mx" class="text-white text-decoration-none">subsecretaria.academica@ujed.mx</a></li>
-        </ul>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <h2 class="h6 fw-bold mb-3">Síguenos</h2>
-        <div class="d-flex flex-column gap-2">
-          <a href="#" class="text-white text-decoration-none"><i class="bi bi-facebook"></i> Facebook</a>
-          <a href="#" class="text-white text-decoration-none"><i class="bi bi-instagram"></i> Instagram</a>
+            <!-- Tarjeta de Acceso -->
+            <div class="row justify-content-center">
+                <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                    <div class="card login-card p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <img src="{% static 'images/ssga_2025.png' %}" class="img-fluid mb-3" style="max-width: 80px;" alt="Logo SSGA">
+                        </div>
+
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <!-- Input de Usuario con Ícono -->
+                            <div class="input-group mb-3 custom-input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                {{ form.username }}
+                            </div> 
+                            
+                            <!-- Input de Contraseña con Ícono -->
+                            <div class="input-group mb-4 custom-input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock-fill"></i>
+                                </span>
+                                {{ form.password }}
+                            </div>
+
+                            <button type="submit" class="btn btn-ujed w-100 mt-3 py-2 fw-bold">Iniciar sesión</button>
+                        </form>
+
+                        <!-- SECCIÓN DE REGISTRO -->
+                        <div class="text-center mt-4 pt-3 border-top border-secondary">
+                            <span class="text-light opacity-75 small">¿No tienes una cuenta?</span><br>
+                            <a href="{% url 'registro' %}" class="text-decoration-none transition-link fw-bold register-link mt-1 d-inline-block">
+                                Regístrate aquí
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <h2 class="h6 fw-bold mb-3">Información</h2>
-        <div class="d-flex flex-column gap-2">
-          <a href="#" class="text-white text-decoration-none">Aviso de privacidad</a>
+    </main>
+
+    <!-- Footer Unificado -->
+    <footer class="bg-dark text-white pt-5 pb-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Dirección</h5>
+                    <address class="footer-text mb-0">
+                        Cuarto piso, Edificio de la Librería UJED.<br>
+                        Victoria Sur 200, esquina con 20 de Noviembre<br>
+                        Zona Centro
+                    </address>
+                </div>
+                
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Contacto</h5>
+                    <ul class="list-unstyled footer-text">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-telephone-fill icon-large me-3"></i> 
+                            <a href="tel:+526188271248" class="text-decoration-none transition-link">+52 (618) 827-12-48</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-envelope-fill icon-large me-3"></i> 
+                            <a href="mailto:subsecretaria.academica@ujed.mx" class="text-decoration-none transition-link" style="word-break: break-all;">subsecretaria.academica@ujed.mx</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Síguenos</h5>
+                    <div class="d-flex flex-column gap-3 footer-text">
+                        <a href="#" class="text-decoration-none transition-link d-flex align-items-center">
+                            <i class="bi bi-facebook icon-large me-3"></i> Facebook
+                        </a>
+                        <a href="#" class="text-decoration-none transition-link d-flex align-items-center">
+                            <i class="bi bi-instagram icon-large me-3"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-12 col-lg-3 text-lg-end text-start">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Información</h5>
+                    <a href="#" class="text-decoration-none d-block mb-3 transition-link footer-text">Aviso de privacidad</a>
+                    
+                    <!-- Logo Identidad -->
+                    <div class="mt-4">
+                        <img src="{% static 'images/Identidad.png' %}" alt="Identidad UJED" class="img-fluid" style="max-height: 70px;">
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-secondary mb-4">
+            
+            <!-- Logo UJED centrado -->
+            <div class="text-center mb-3">
+                <img src="{% static 'images/logo-ujed.2025.png' %}" alt="Logo UJED" class="img-fluid" style="max-height: 100px;">
+            </div>
+            <div class="text-center footer-text" style="font-size: 0.85rem;">
+                &copy; 2026 Universidad Juárez del Estado de Durango. Todos los derechos reservados.
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-</footer>
+    </footer>
 
-<nav class="text-white py-4 mt-0" style="background-color: #ba0000;">  <!-- Elimina margen superior -->
-  <div class="container">
-    <div class="d-flex flex-column align-items-center">
-      <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 mb-3">
-        <a href="#" class="navbar-brand">
-          <img src="{% static 'images/logo-ujed.2025.png' %}" 
-               alt="University Logo" 
-               class="img-fluid" 
-               style="max-width: 120px; height: auto;">
-        </a>
-      </div>
-    </div>
-  </div>
-</nav>
-
+</div>
 {% endblock %}

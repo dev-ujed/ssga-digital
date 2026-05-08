@@ -1,67 +1,233 @@
 {% extends "layouts/main.html" %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <style>
+    /* Fondo responsivo con capa oscura para mejor lectura (Mismo que el login) */
     body {
-      background-image: url("{% static 'images/school.png' %}");
-      background-size: cover;  /* Ajusta la imagen al tamaño de la pantalla */
-              background-position: center; /* Centra la imagen */
-              background-repeat: no-repeat; /* No repetir la imagen */
-              background-attachment: fixed; /* Mantiene el fondo fijo al hacer scroll */
-              min-height: 100vh; /* Asegura que cubra toda la pantalla */
-              margin: 0; /* Elimina márgenes */
-          }
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url("{% static 'images/bg_4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+    }
+
+    /* Tarjeta de registro moderna */
+    .login-card {
+        background-color: rgba(33, 37, 41, 0.95);
+        border: none;
+        border-top: 4px solid #ba0000;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+    }
+
+    /* Botón UJED */
+    .btn-ujed {
+        background-color: #ba0000;
+        color: #ffffff;
+        transition: all 0.3s ease;
+    }
+    .btn-ujed:hover {
+        background-color: #8c0000;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    /* --- ESTILOS PARA LOS CAMPOS GENERADOS POR {{ form }} --- */
+    .login-card label {
+        color: #e9ecef;
+        margin-top: 1rem;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: block;
+    }
+    
+    .login-card input, .login-card select {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 5px;
+        border: 1px solid #495057;
+        background-color: #2b3035 !important;
+        color: #ffffff !important;
+        transition: all 0.3s ease;
+    }
+    
+    .login-card input:focus, .login-card select:focus {
+        outline: none;
+        border-color: #ba0000 !important;
+        box-shadow: none !important;
+    }
+
+    /* Textos de ayuda de Django (Ej. "La contraseña debe contener...") */
+    .login-card .helptext {
+        color: #adb5bd;
+        font-size: 0.8rem;
+        display: block;
+        margin-top: 0.4rem;
+    }
+
+    /* Lista de errores de Django */
+    .login-card ul.errorlist {
+        color: #ff6b6b; /* Un rojo claro para que se lea en el fondo oscuro */
+        font-size: 0.85rem;
+        list-style-type: none;
+        padding-left: 0;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
+    .login-card ul.errorlist li {
+        margin-bottom: 0.2rem;
+    }
+
+    /* Textos del footer y enlaces */
+    .footer-text {
+        color: #f8f9fa !important;
+        font-size: 0.95rem;
+    }
+    .transition-link {
+        color: #f8f9fa !important;
+        transition: color 0.3s ease;
+    }
+    .transition-link:hover {
+        color: #ba0000 !important;
+    }
+    .register-link {
+        color: #ba0000 !important;
+    }
+    .register-link:hover {
+        color: #f8f9fa !important;
+        text-decoration: underline !important;
+    }
+    .icon-large {
+        font-size: 1.5rem;
+        vertical-align: middle;
+    }
 </style>
 
-<div class="container" style="margin-top: 60px;">  
-    <form action="/registrarme/" method="POST">
-        {% csrf_token %}
-        <div class="card mb-3">
-            <h2 class="card-header">Registrarme!</h2>
-            <div class="card-body">
-            {% comment %} {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }} 
+<!-- Contenedor principal para organizar Formulario y Footer -->
+<div class="d-flex flex-column" style="min-height: calc(100vh - 80px);">
+
+    <!-- Contenido Principal (Formulario Centrado) -->
+    <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            
+            <!-- Mensajes de Django -->
+            {% if messages %}
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8 col-lg-6">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-            {% endif %} {% endcomment %}
-              <div class="alert alert-warning" role="alert">
-                Favor utilizar tu correo institucional o algun otro como nombre de usuario.
-              </div>
-            {{ form }}
-            <button class="btn btn-sm float-end" type="submit" style="background-color: #212529; color: #fff;">Registrarme</button>
-          </div>
+            {% endif %}
+
+            <!-- Tarjeta de Registro -->
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card login-card p-4 p-md-5">
+                        
+                        <div class="text-center mb-4">
+                            <img src="{% static 'images/ssga_2025.png' %}" class="img-fluid mb-3" style="max-width: 80px;" alt="Logo SSGA">
+                            <h2 class="h4 text-white fw-bold mb-1">Registro</h2>
+                            <p class="text-light opacity-75 small">Crea tu cuenta en la plataforma</p>
+                        </div>
+
+                        <!-- Alerta Informativa -->
+                        <div class="alert alert-warning border-0" style="background-color: rgba(255, 193, 7, 0.1); color: #ffc107;" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i> Favor utilizar tu correo institucional o algún otro como nombre de usuario.
+                        </div>
+
+                        <form action="/registrarme/" method="POST" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- El formulario automático de Django -->
+                            {{ form }}
+                            
+                            <button type="submit" class="btn btn-ujed w-100 mt-4 py-2 fw-bold">Registrarme</button>
+                        </form>
+
+                        <!-- SECCIÓN DE REGRESO AL LOGIN -->
+                        <div class="text-center mt-4 pt-3 border-top border-secondary">
+                            <span class="text-light opacity-75 small">¿Ya tienes una cuenta?</span><br>
+                            <!-- Reemplaza 'login' por el name de tu url de inicio de sesión -->
+                            <a href="{% url 'login' %}" class="text-decoration-none transition-link fw-bold register-link mt-1 d-inline-block">
+                                Iniciar sesión
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </form>
+    </main>
+
+    <!-- Footer Unificado (Exactamente el mismo del Login) -->
+    <footer class="bg-dark text-white pt-5 pb-4 mt-auto border-top border-secondary">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Dirección</h5>
+                    <address class="footer-text mb-0">
+                        Cuarto piso, Edificio de la Librería UJED.<br>
+                        Victoria Sur 200, esquina con 20 de Noviembre<br>
+                        Zona Centro
+                    </address>
+                </div>
+                
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Contacto</h5>
+                    <ul class="list-unstyled footer-text">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-telephone-fill icon-large me-3"></i> 
+                            <a href="tel:+526188271248" class="text-decoration-none transition-link">+52 (618) 827-12-48</a>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-envelope-fill icon-large me-3"></i> 
+                            <a href="mailto:subsecretaria.academica@ujed.mx" class="text-decoration-none transition-link" style="word-break: break-all;">subsecretaria.academica@ujed.mx</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-12 col-md-4 col-lg-3">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Síguenos</h5>
+                    <div class="d-flex flex-column gap-3 footer-text">
+                        <a href="#" class="text-decoration-none transition-link d-flex align-items-center">
+                            <i class="bi bi-facebook icon-large me-3"></i> Facebook
+                        </a>
+                        <a href="#" class="text-decoration-none transition-link d-flex align-items-center">
+                            <i class="bi bi-instagram icon-large me-3"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-12 col-lg-3 text-lg-end text-start">
+                    <h5 class="h6 fw-bold mb-3 text-uppercase" style="color: #ba0000;">Información</h5>
+                    <a href="#" class="text-decoration-none d-block mb-3 transition-link footer-text">Aviso de privacidad</a>
+                    
+                    <!-- Logo Identidad -->
+                    <div class="mt-4">
+                        <img src="{% static 'images/Identidad.png' %}" alt="Identidad UJED" class="img-fluid" style="max-height: 70px;">
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-secondary mb-4">
+            
+            <!-- Logo UJED centrado sobre los derechos reservados -->
+            <div class="text-center mb-3">
+                <img src="{% static 'images/logo-ujed.2025.png' %}" alt="Logo UJED" class="img-fluid" style="max-height: 100px;">
+            </div>
+            <div class="text-center footer-text" style="font-size: 0.85rem;">
+                &copy; 2026 Universidad Juárez del Estado de Durango. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
 </div>
-
-<nav class="navbar" style="background: #212529; color: white; padding: 15px 0; margin-top: 60px;">
-    <div class="container-fluid d-flex flex-column align-items-center text-center">
-      <!-- Imagen centrada -->
-      <a class="navbar-brand" href="#">
-        <img src="{% static 'images/Identidad.png' %}" alt="Logo" width="130" height="auto" class="d-inline-block align-text-top">
-      </a>
-      <!-- Texto centrado debajo de la imagen -->
-      <h1 class="mb-0">SUBSECRETARÍA GENERAL ACADÉMICA</h1>
-    </div>
-</nav>
-<nav class="text-white py-4 mt-0" style="background-color: #ba0000;">  <!-- Elimina margen superior -->
-    <div class="container">
-      <div class="d-flex flex-column align-items-center">
-        <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 mb-3">
-          <a href="#" class="navbar-brand">
-            <img src="{% static 'images/logo-ujed.2025.png' %}" 
-                 alt="University Logo" 
-                 class="img-fluid" 
-                 style="max-width: 120px; height: auto;">
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>  
-
 {% endblock %}
